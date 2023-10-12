@@ -1,5 +1,5 @@
 {
-  "name": "watzullenweeten",
+  "name": "watzullenwekoken",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,8 +13,11 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
+    "gsap": "^3.12.2",
+    "pinia": "^2.1.6",
+    "sass": "^1.69.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
+    "vite": "^4.4.11",
     "vue-tsc": "^1.8.5"
   }
 }
