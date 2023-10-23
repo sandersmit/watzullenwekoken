@@ -2,6 +2,10 @@
 import { reactive,computed,defineProps,ref, watch, onMounted } from "vue";
 import gsap from 'gsap'
 
+import { useFoodStore } from '../stores/Foodstore';
+import { storeToRefs } from "pinia"; 
+
+
 import { TextPlugin } from "gsap/TextPlugin";
 gsap.registerPlugin(TextPlugin);
 
@@ -17,6 +21,11 @@ const props =  defineProps({
     }
 });
 
+const foodStore = useFoodStore();
+const { reactiveOrderMenus } = storeToRefs(useFoodStore()); 
+
+
+console.log(reactiveOrderMenus.value)
 
 //To replace the data(){}
 const CTAbutton = ref(null)
@@ -43,7 +52,7 @@ const menusReactive = reactive({
         param2: countdown.value,
         param3: [1,2,3,4],
     })
-console.log(totalMenus.value.length)
+console.log(reactiveOrderMenus.value.length)
 
 
 //METHODS
@@ -58,12 +67,11 @@ function giveNumber(){
   countdown.value--;
   // intervalNumber.value = intervalNumber.value*intervalReducer;
   console.log("new interval number", intervalNumber.value) // 0 
-  return getRandomInt(totalMenus.value.length);
+  return getRandomInt(reactiveOrderMenus.value.length);
 }
 
 function start(){
     console.log("start")
-    CTAbutton.value.enabled=false;
     CTAbutton.value.disabled=true;
    progress.value=true;
    intervalID.value = setInterval(giveNumber, intervalNumber.value, "Parameter 1", "Parameter 2");
@@ -72,7 +80,6 @@ function start(){
 
 function reset(){
   countdown.value = 5;
-  CTAbutton.value.enabled=true;
   CTAbutton.value.disabled=false;
   progress.value = false;
   console.log("reset - triggered", countdown.value);
@@ -81,7 +88,7 @@ function reset(){
 
 //COMPUTED
 //const usernameState = computed(() => mapstState(voertuigStore, ["currentUser"]))
-const computedMenuTotalMenus = computed(() => totalMenus.value.length )
+const computedMenuTotalMenus = computed(() => reactiveOrderMenus.value.length )
 const computedMenuNumber = computed(  
     function compMenuNumb(){
       // console.log("totalMenus.value.length",menuNumberRef.value)
@@ -111,16 +118,14 @@ watch(menuNumberRef, (n) => {
   console.log("watch number")
   //gsap.to(totalMenus, { duration: 0.5, number: Number(n) || 0 })
   //replaces yourElement's text with "This is the new text" 
-  gsap.to(".highlight", {duration: 1, text: totalMenus.value[menuNumberRef.value], delay: 1});
-
+  gsap.to(".highlight", {duration: 1, text: reactiveOrderMenus.value[menuNumberRef.value], delay: 1});
 })
-
 
 onMounted(() => {
   console.log("on mounted",countdown.value )
   CTAbutton.value.className = 'true'
   CTAbutton.value.enabled= 'true'
-})
+})  
 </script>
 
 <template>
@@ -133,6 +138,7 @@ onMounted(() => {
       </Transition> -->
     </h1>
   </header>
+
   <section class="content">
     <!-- <Transition>
       <p v-if="progress">
@@ -226,7 +232,8 @@ header {
   flex-direction: column;
 
   h1 {
-    padding: 0rem;
+    padding: 0rem 1rem;
+    word-break:break-word;
   }
 
   h2 {

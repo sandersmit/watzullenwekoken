@@ -7,7 +7,15 @@ import AppName from './App.vue'
 //pinia instance for data
 import { createPinia } from 'pinia'
 
+//import router - createRouter and history.. from 'vue-router' npm dependancy
+import router from './router';
+
+//pages
 import MenuItemComp from './components/MenuItemComp.vue'
+
+//components
+import MenuItemComp from './components/MenuItemComp.vue'
+import NavigationComp from './components/NavigationComp.vue'
 
 //setting a constant for the imported 'main/global' AppName
 const WatZullenWeEtenApp = createApp(AppName);
@@ -17,6 +25,10 @@ const pinia = createPinia()
 
 //import related components
 WatZullenWeEtenApp.component('menu-item-comp', MenuItemComp);
+WatZullenWeEtenApp.component('navigation-comp', NavigationComp);
+
+//adding router
+WatZullenWeEtenApp.use(router);
 
 //adding pinia
 WatZullenWeEtenApp.use(pinia)
