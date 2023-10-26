@@ -79,7 +79,7 @@ function start(){
 }
 
 function reset(){
-  countdown.value = 5;
+  countdown.value = 5; 
   CTAbutton.value.disabled=false;
   progress.value = false;
   console.log("reset - triggered", countdown.value);

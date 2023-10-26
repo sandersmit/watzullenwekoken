@@ -73,7 +73,7 @@ export const useFoodStore = defineStore('FoodStore', {
       getAllIds:function(state){
         console.log("getAllIds..")
         for(var key in this.reactiveFoodCategorieAllId.meals) {
-          console.log(this.reactiveFoodCategorieAllId.meals[key].idMeal)
+          //console.log(this.reactiveFoodCategorieAllId.meals[key].idMeal)
           state.reactiveFoodAllIdsState.push(this.reactiveFoodCategorieAllId.meals[key].idMeal)
            }
           // console.log("state.reactiveFoodAllIds", state.reactiveFoodAllIdsState)
@@ -93,6 +93,7 @@ export const useFoodStore = defineStore('FoodStore', {
             console.log("error",error)
           });
             this.reactiveFoodCategorie = response;
+             return response;
           //  console.log("this.reactiveFoodCategorie",this.reactiveFoodCategorie )
        },
         async fetchCategorieIds(foodcatArg){
@@ -106,6 +107,7 @@ export const useFoodStore = defineStore('FoodStore', {
               return response.json();            
             });
            this.reactiveFoodCategorieAllId = response;
+           return response;
         },
         async fetchFoodId(randomArg){
           console.log("fetching fetchFoodId..", randomArg)

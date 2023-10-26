@@ -10,7 +10,8 @@
     </router-view>
   </section>
 </template>
-<style scoped>
+<style scoped lang="scss">
+
 .routerview{
   display: flex;
   flex-direction: column;

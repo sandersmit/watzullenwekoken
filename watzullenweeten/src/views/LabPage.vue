@@ -11,11 +11,13 @@ const randomIdMenuRef = ref(0)
 const foodStore = useFoodStore();
 const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState } = storeToRefs(useFoodStore()); 
 
+
 //METHODS
 
 //foodStore.getAllIds;
 //foodStore.fetchFoodId(targetRandomMenuID())
-foodStore.fetchFoodCategorie();
+//foodStore.fetchFoodCategorie();
+
 
 
 function getComputedIds(){
@@ -26,9 +28,13 @@ function getComputedIds(){
         foodStore.fetchCategorieIds(categoriesFood.value[key])
         }
     }
-   return reactiveFoodCategorieAllId.value;
+  return reactiveFoodCategorieAllId.value;
 }
 
+// function showImg(){
+//  console.log("show imgs");  
+//  return 
+// }
 
 function getRandomId(max:number) {
   randomIdMenuRef.value = Math.floor(Math.random() * max);
@@ -36,18 +42,39 @@ function getRandomId(max:number) {
 }
 
 function targetRandomMenuID(){
-  //console.log(foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)])
+  console.log("targetRandomMenuID", foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)])
   return foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)]
 }
 
+
+
 function fetchRandomMenuID(){
-  foodStore.fetchFoodId(targetRandomMenuID())
+    console.log("fetchRandomMenuID")
+     foodStore.fetchFoodId(targetRandomMenuID())
+    //console.log(response)
 }
 
-function showImg(){
- console.log("show imgs");  
- return 
+//await all catergoriesID's
+async function fetchCategorieIds(arg){
+    console.log("fetchCategorieIds")
+    const response = await foodStore.fetchCategorieIds(arg)
+    console.log(response)
+    //if (response) {
+        
+        fetchRandomMenuID()
+    //}
 }
+//await all catergories
+async function loopcategoriesForIdfunction(){
+        const response = await foodStore.fetchFoodCategorie();
+        console.log(response.categories[0].strCategory);
+        //when its done, do a foreach on the response - also awaiting 
+        response.categories.forEach(newfunction);
+        function  newfunction(item){
+            console.log("loopcategoriesForIdfunction");
+           fetchCategorieIds(item.strCategory)
+         }
+    }
 
 //COMPUTED
 const computeTitle = computed(function(){
@@ -57,7 +84,6 @@ const computeTitle = computed(function(){
 })
 
 const computeCategorie = computed(function(){
-    //fetchAllids()
     console.log("reactiveFoodCategorie..", reactiveFoodCategorie.value.categories)
     if(reactiveFoodCategorie.value.categories){
             console.log("oke")
@@ -65,8 +91,6 @@ const computeCategorie = computed(function(){
             return foodStore.getCategorieFoodMenu;
     } 
 })
-
-
 // const computeMenuValue = computed(function(){
 //   return foodStore.getFoodMenuValue;
 // })
@@ -82,11 +106,8 @@ const computeFetchedids = computed(function(){
 })
 
 const computeShowAllIds = computed(function(){
-    console.log("computeShowALlIds..")
-    if(computeCategorie){
-       // getComputedIds()
+    console.log("computeShowAllIds..")
         return foodStore.getAllIds;
-    }
 })
 
 const showInstructions = computed(function(){
@@ -98,21 +119,13 @@ const showInstructions = computed(function(){
 })
 
 //WATCHERS
-watch(computeCategorie, () => {
-  if ( computeCategorie ){
-        console.log("watch - triggered computeCategorie", computeCategorie.value);
-        getComputedIds()
+// watch(computeCategorie, () => {
+//   if ( computeCategorie ){
+//         console.log("watch - triggered computeCategorie", computeCategorie.value);
+//         getComputedIds()
        
-    }
-})
-
-watch(computeCategorie, () => {
-  if ( computeCategorie ){
-        console.log("watch - triggered computeCategorie", computeCategorie.value);
-        getComputedIds()
-       
-    }
-})
+//     }
+// })
 
 onMounted(() => {
  console.log("onMounted?")
@@ -120,6 +133,7 @@ onMounted(() => {
  //foodStore.fetchFood();
  //foodStore.fetchFoodId();
  //foodStore.fetchFoodCategorie();
+ loopcategoriesForIdfunction()
 })
 
 </script>
@@ -142,10 +156,11 @@ onMounted(() => {
                 <h5 v-if="computeCategorie">total Categories: {{computeCategorie.length}}</h5>
                 <h5 v-else  > no categories yet</h5>
                 <h2>{{ computeCategorie }}</h2>
-                <!-- {{ categoriesFood.length }} -->
+                <h3>{{ categoriesFood.length }}</h3>
 
                 {{ computeShowAllIds }}
-
+               
+                
                 <h3>instructions</h3>
                 <div>{{ showInstructions }}</div>
                 <img src="" alt="">
