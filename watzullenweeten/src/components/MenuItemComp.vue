@@ -21,11 +21,8 @@ const props =  defineProps({
     }
 });
 
-
-
 const foodStore = useFoodStore();
 const { reactiveOrderMenus, alltitlesFromApi, allMenuDetailsFromApi } = storeToRefs(useFoodStore()); 
-console.log(reactiveOrderMenus.value)
 
 //To replace the data(){}
 const CTAbutton = ref(null)
@@ -56,7 +53,6 @@ const menusReactive = reactive({
         param2: countdown.value,
         param3: [1,2,3,4],
     })
-console.log(reactiveOrderMenus.value.length)
 
 //METHODS
 function getRandomInt(max:number) {
@@ -64,16 +60,12 @@ function getRandomInt(max:number) {
 }
 
 function giveNumber(){
-  console.log(menuNumberRef.value)
   countdown.value--;
-  // intervalNumber.value = intervalNumber.value*intervalReducer;
-  console.log("new interval number", intervalNumber.value) // 0 
-  //return getRandomInt(reactiveOrderMenus.value.length);
+  //new interval number", intervalNumber.value) // 0 
   return getRandomInt(alltitlesFromApi.value.length);
 }
 
 function start(){
-  console.log("start",giveNumber ,alltitlesFromApi.value, intervalNumber.value)
   CTAbutton.value.disabled=true;
   progress.value=true;
   intervalID.value = setInterval(giveNumber, intervalNumber.value, "Parameter 1", "Parameter 2");
@@ -83,29 +75,19 @@ function reset(){
   countdown.value = 5; 
   CTAbutton.value.disabled=false;
   progress.value = false;
-  //console.log("reset - triggered", countdown.value);
- // clearInterval(intervalID.value );
 }
 
 function togleClassname($event){  
-//  toggleValue.value = !toggleValue.value;
-  // $event.target.toggle.className = "active";
+  //toggle reactive ref - toggleValue.value = !toggleValue.value;
  $event.currentTarget.classList.toggle("open");
  $event.currentTarget.nextElementSibling.classList.toggle("openthis");
-  //console.log($event.currentTarget)
 }
 
-
-
 //COMPUTED
-//const usernameState = computed(() => mapstState(voertuigStore, ["currentUser"]))
-//const computedMenuTotalMenus = computed(() => reactiveOrderMenus.value.length )
 const computedMenuTotalMenus = computed(() => alltitlesFromApi.value.length )
 
 const computedMenuNumber = computed(  
     function compMenuNumb(){
-      // console.log("totalMenus.value.length",menuNumberRef.value)
-    //  console.log("giveNumber()", giveNumber())
       return giveNumber();
     }
   )
@@ -114,71 +96,55 @@ const computeFetchedIdTitles = computed(function(){
 })
 
 const computeTitles = computed(function(){
-  //console.log(foodStore.getFoodMenuTitle)
   return foodStore.getFoodMenuTitle;
 })
 
 const showInstructions = computed(function(){
-  //console.log("showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value)
+  //showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value
   for (let i in foodStore.getAllFoodMenuValues) {
-    //console.log(foodStore.getAllFoodMenuValues[i]);
    return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
   }
 })
 
 const showMenuId = computed(function(){
   for (let i in foodStore.getAllFoodMenuValues) {
-   // console.log("i:", i)
    return foodStore.getAllFoodMenuValues[menuNumberRef.value].idMeal
   }
 })
 
 const showMenuIngredients = computed(function(){
   for (const [key, value] of Object.entries(foodStore.getAllFoodMenuValues)) {
-  // console.log(`${value.strIngredient5}`);
   //filter in object for sertain key names
   let arrayingredientValueKeys = Object.fromEntries(Object.entries(foodStore.getAllFoodMenuValues[menuNumberRef.value]).filter(([key]) => key.includes('strIngredient')));
   //return the values from those keynames
   let arrayingredientValues = Object.values(arrayingredientValueKeys);  
-    //remove all empty values from array
+  //remove all empty values from array
   return arrayingredientValues.filter(Boolean);
     }
 })
 
 const checkToggleStatus = computed(function(){
-  //console.log(foodStore.getFoodMenuTitle)
-  //.contains("toggleBox.openthis")
   return toggleValue.value;
 })
-
 
 //WATCHERS
 watch(countdown, (choose, prevCount) => {
   if ( countdown.value == 0){
-        console.log("watch - triggered clearInterval", countdown.value);
+       //watch - triggered clearInterval", countdown.value
         clearInterval(intervalID.value );
         reset();   
     }
 })
 
 watch(menuNumberRef, (n) => {
-  console.log("watch number")
-  //gsap.to(totalMenus, { duration: 0.5, number: Number(n) || 0 })
-  //replaces yourElement's text with "This is the new text" 
-  //gsap.to(".highlight", {duration: 1, text: reactiveOrderMenus.value[menuNumberRef.value], delay: 1});
+  //watch number
+  //replaces text:
   gsap.to(".highlight", {duration: 1, text: alltitlesFromApi.value[menuNumberRef.value], delay: 1});
 })
 
 onMounted(() => {
-  console.log("on mounted",countdown.value )
   CTAbutton.value.className = 'true'
   CTAbutton.value.enabled= 'true'
-
-
-//   document.querySelectorAll(".accord").forEach(element => {
-//   console.log("found")
-//   element.addEventListener("click",togleClassname);
-// });
 })  
 </script>
 
@@ -186,29 +152,14 @@ onMounted(() => {
     <header>
     <h6>Totaal aantal menus: 
         <span class="number">
-        <!-- {{ computedMenuTotalMenus }}  -->
-        <!-- {{ computeFetchedIdTitles.length }} -->
-        {{alltitlesFromApi.length}}
+        {{ alltitlesFromApi.length }}
       </span>
     </h6>
-      <!-- <ul v-for="(food, index) in computeFetchedIdTitles">
-      </ul>
-      {{ computeFetchedIdTitles }} -->
-      <!-- {{ computeTitles }} -->
       <h1>{{ msg }}
         <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeFetchedIdTitles[menuNumberRef] }}</span></div>
-        <!-- <Transition name="highlightTrans">
-          <span v-if="!progress" class="highlight">{{ totalMenus[menuNumberRef] }}</span>
-        </Transition> -->
       </h1>
     </header>
   <section class="content">
-    <!-- <Transition>
-      <p v-if="progress">
-        <span id="myText">{{ totalMenus[menuNumberRef] }} </span>
-      </p>
-    </Transition> -->
-    <!-- <div id="myText">wait 1 second please</div> -->
     <Transition name="fadeTrans"> 
         <span  v-if="!progress" class="questionmark">?</span>
     </Transition>
@@ -216,36 +167,28 @@ onMounted(() => {
   <section>
     <button ref="CTAbutton" type="button" enabled class="CTA" @click="start()">Wat koken we vandaag? </button>
   </section>
- 
   <section class="menu">
     <h4 v-if="showMenuId">Menu: {{ showMenuId }}</h4>
     <h4 v-else> Menu: <i>no id found</i></h4>
     <h3>Instructions</h3>
-    
     <div v-if="showInstructions">
       {{ showInstructions}}
     </div>
     <div v-else>
       no instructions found
     </div>
-    
-    
   <div v-if="showMenuIngredients">
     <a @click="togleClassname($event)" class="accord" >
-   
-    <h3>Ingredienten (  {{showMenuIngredients.length}})</h3>     
+    <h3>Ingredienten ({{showMenuIngredients.length}})</h3>     
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
         <title>plus circle</title>
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
       </svg>
     </a> 
-    <!-- <ul class="ingredients"  :class="{toggleBox:checkToggleStatus}"> -->
-    <Transition>
         <ul class="ingredients toggleBox">
             <li v-for="(ingredient, index) in showMenuIngredients" :key="index" >{{ingredient}}</li>
         </ul>
-    </Transition>
   </div>
   <div v-else>
     no Ingredients found
@@ -258,7 +201,6 @@ onMounted(() => {
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
     </svg>
   </a>
-  <Transition>
     <div v-if="allMenuDetailsFromApi" class="toggleBox" ref="refTarget">
         <ul class="allMenus" v-for="(food, index) in allMenuDetailsFromApi">
           <li>index:{{ index }} - ID: {{ food.idMeal }}</li> 
@@ -268,7 +210,6 @@ onMounted(() => {
     <div v-else>
       no data found
     </div>
-  </Transition>
   </section>
 </template>
 
@@ -411,7 +352,6 @@ header {
 }
 
 p {
-  // align-self: top;
   font-size: 2rem;
 }
 

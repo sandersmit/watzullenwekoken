@@ -4,8 +4,6 @@ import './assets/scss/main.scss'
 
 import iconHome from "./assets/images/home.svg"
 
-console.log(iconHome)
-
 //import from the 'default' object from the 'general' App.vue file - a vue file
 import AppName from './App.vue'
 

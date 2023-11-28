@@ -8,51 +8,19 @@ import iconPlayground from "../assets/images/pallet.svg";
 
 const activeState = ref(false)
 
-//METHODS
-// foodStore.fetchFoodCategorie();
-// //foodStore.fetchRandomFoodId(targetRandomMenuID())
-
-// function newFetch(){
-//   foodStore.fetchFoodCategorie();
-// // 
-// }
-
-function togleClassname($event){  
-          // this.isActive = !this.isActive;
-         // console.log(`toggle ${this.isActive}`);
-        //  console.log(`event target ${$event.target.className}`);
-          //$event.target.classList.add("active");
-      }
-
-
-//COMPUTED
-// const computeTitle = computed(function(){
-//   //console.log(foodStore.getFoodMenuTitle)
-//   //foodStore.getFoodMenuTitle;
-//   return foodStore.getFoodMenuTitle;
-// })
-
-
-
-// onMounted(() => {
-//  console.log("onMounted?")
-
-// })
-
 </script>
-
 <template>
     <!-- USING 2 properties - Data properties & Props properties
     Prop properties you can use with only the prop name {{ nameProp }}
     Data properties you need to call with the dot notation: by {{Object.propertiename}} -->    
 <nav>
   <ul class="nav nav-pills">
-    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><img alt="home" :src="iconHome"><router-link class="nav-link" aria-current="page" to="/mainpage">Main app</router-link></li>
-    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><img alt="lab" :src="iconLab"><router-link class="nav-link" to="/labpage">Lab app</router-link></li>
-    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><img alt="lab" :src="iconPlayground"><router-link class="nav-link" to="/playgroundpage">Playground</router-link></li>
+    <li class="nav-item" :class="{ active: activeState }"><img alt="home" :src="iconHome"><router-link class="nav-link" aria-current="page" to="/mainpage">Main app</router-link></li>
+    <li class="nav-item" :class="{ active: activeState }"><img alt="lab" :src="iconLab"><router-link class="nav-link" to="/labpage">Lab app</router-link></li>
+    <li class="nav-item" :class="{ active: activeState }"><img alt="lab" :src="iconPlayground"><router-link class="nav-link" to="/playgroundpage">Playground</router-link></li>
   </ul>
   <div class="logo">
-  <a href="https://vitejs.dev" target="_blank">
+    <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
     </a>
     <a href="https://vuejs.org/" target="_blank">
@@ -102,7 +70,6 @@ function togleClassname($event){
         &.nav-link{
           padding: 1rem;
           display: block;
-          //border-bottom: solid 1px #484848;
           &:hover{
               color:#f2f2f2
           }
@@ -118,7 +85,5 @@ function togleClassname($event){
         }
       }
   }
-
-
 </style>
 
