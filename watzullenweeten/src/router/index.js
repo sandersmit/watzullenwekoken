@@ -13,6 +13,10 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: [
         {
+            path:"/",
+            component: MainPage
+        },
+        {
             path:"/mainpage",
             component: MainPage
         },

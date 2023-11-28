@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { reactive,computed,defineProps,ref,watch, onMounted } from "vue";
+import { reactive ,computed ,defineProps ,ref,watch, onMounted } from "vue";
 
-import MenuItemComp from '../components/MenuItemComp.vue';
-import NavigationComp from "../components/NavigationComp.vue";
+// import MenuItemComp from '../components/MenuItemComp.vue';
 
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
@@ -14,7 +13,7 @@ const { reactiveOrderMenus, reactiveFoodCategorie,reactiveFoodMenuDetails, categ
 //METHODS
 
 //foodStore.getAllIds;
-//foodStore.fetchFoodId(targetRandomMenuID())
+//foodStore.fetchRandomFoodId(targetRandomMenuID())
 foodStore.fetchFoodCategorie();
 
 
@@ -40,7 +39,7 @@ function targetRandomMenuID(){
 }
 
 function fetchRandomMenuID(){
-  foodStore.fetchFoodId(targetRandomMenuID())
+  foodStore.fetchRandomFoodId(targetRandomMenuID())
 }
 
 //COMPUTED
@@ -105,18 +104,17 @@ onMounted(() => {
 
  //fetchRandomMenuID()
  //foodStore.fetchFood();
- //foodStore.fetchFoodId();
+ //foodStore.fetchRandomFoodId();
  //foodStore.fetchFoodCategorie();
 })
 
 </script>
 
 <template>
-     <menu-item-comp msg="We koken vandaag??"/>
 
     <div class="results"> 
       <button @click="foodStore.fetchFoodCategorie()">fetch categorie</button>
-      <!-- <button @click="foodStore.fetchFoodId()">fetch FoodId</button> -->
+      <!-- <button @click="foodStore.fetchRandomFoodId()">fetch FoodId</button> -->
       <button @click="getComputedIds()">get all id's {{ computeFetchedids.length }}</button>
       <button @click="fetchRandomMenuID()">pickMenu</button> pickedMenu is {{randomIdMenuRef}}
       <!-- <button @click="newFetch()">new fetch</button> -->

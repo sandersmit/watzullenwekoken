@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import iconHome from "../assets/images/home.svg";
+import iconLab from "../assets/images/lab.svg";
+import iconPlayground from "../assets/images/pallet.svg";
+
 
 const activeState = ref(false)
 
 //METHODS
 // foodStore.fetchFoodCategorie();
-// //foodStore.fetchFoodId(targetRandomMenuID())
+// //foodStore.fetchRandomFoodId(targetRandomMenuID())
 
 // function newFetch(){
 //   foodStore.fetchFoodCategorie();
@@ -15,7 +19,6 @@ const activeState = ref(false)
 
 function togleClassname($event){  
           // this.isActive = !this.isActive;
-
          // console.log(`toggle ${this.isActive}`);
         //  console.log(`event target ${$event.target.className}`);
           //$event.target.classList.add("active");
@@ -44,10 +47,9 @@ function togleClassname($event){
     Data properties you need to call with the dot notation: by {{Object.propertiename}} -->    
 <nav>
   <ul class="nav nav-pills">
-    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><router-link class="nav-link" aria-current="page" to="/mainpage">Main app</router-link></li>
-    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><router-link class="nav-link" to="/labpage">Lab app</router-link></li>
-    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><router-link class="nav-link" to="/playgroundpage">Playground</router-link></li>
-   
+    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><img alt="home" :src="iconHome"><router-link class="nav-link" aria-current="page" to="/mainpage">Main app</router-link></li>
+    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><img alt="lab" :src="iconLab"><router-link class="nav-link" to="/labpage">Lab app</router-link></li>
+    <li @click="togleClassname($event)" class="nav-item" :class="{ active: activeState }"><img alt="lab" :src="iconPlayground"><router-link class="nav-link" to="/playgroundpage">Playground</router-link></li>
   </ul>
   <div class="logo">
   <a href="https://vitejs.dev" target="_blank">
@@ -83,7 +85,12 @@ function togleClassname($event){
     padding: 1rem;
     text-decoration: none;
     list-style: none;
+    display: flex;
     
+  }
+  img{
+    color:#35eb9a;
+    width: 1rem;
   }
  }
        a{

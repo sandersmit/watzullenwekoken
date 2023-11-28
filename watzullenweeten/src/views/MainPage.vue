@@ -2,32 +2,31 @@
 import { reactive,computed,defineProps,ref,watch, onMounted } from "vue";
 
 import MenuItemComp from '../components/MenuItemComp.vue';
-import NavigationComp from "../components/NavigationComp.vue";
+
 
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
 const randomIdMenuRef = ref(0)
 const foodStore = useFoodStore();
-const { reactiveOrderMenus, reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState } = storeToRefs(useFoodStore()); 
+const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
 
 //METHODS
 
 //foodStore.getAllIds;
-//foodStore.fetchFoodId(targetRandomMenuID())
-foodStore.fetchFoodCategorie();
+//foodStore.fetchRandomFoodId(targetRandomMenuID())
+//foodStore.fetchFoodCategorie();
 
-
-function getComputedIds(){
-  if(categoriesFood.value.length > 0){
-        for(var key in categoriesFood.value) {
-        console.log(key)
-        console.log(categoriesFood.value[key])
-        foodStore.fetchCategorieIds(categoriesFood.value[key])
-        }
-    }
-   return reactiveFoodCategorieAllId.value;
-}
+// function getComputedIds(){
+//   if(categoriesFood.value.length > 0){
+//         for(var key in categoriesFood.value) {
+//         console.log(key)
+//         console.log(categoriesFood.value[key])
+//         foodStore.fetchCategorieIds(categoriesFood.value[key])
+//         }
+//     }
+//    //return reactiveFoodCategorieAllId.value;
+// }
 
 function getRandomId(max:number) {
   randomIdMenuRef.value = Math.floor(Math.random() * max);
@@ -40,8 +39,52 @@ function targetRandomMenuID(){
 }
 
 function fetchRandomMenuID(){
-  foodStore.fetchFoodId(targetRandomMenuID())
+  foodStore.fetchRandomFoodId(targetRandomMenuID())
 }
+
+function fetchAllMenuData(){
+  console.log("fetchAllMenuData")
+    //foodStore.fetchFoodId(reactiveFoodAllIdsState.value.length)
+    for (let index = 0; index < 14; index++) {
+         foodStore.fetchFoodId(reactiveFoodAllIdsState.value[index])
+    }
+    //reactiveFoodAllIdsState.value.forEach(fetchCategorieIds);
+        // fetchCategorieIds(item,index)
+        // {        
+       // console.log("fetchAllMenuData",reactiveFoodAllIdsState.value.length)
+       // foodStore.fetchFoodId(item)
+       // }   
+}
+
+// //await all catergoriesID's
+async function fetchCategorieIds(arg, countArg){
+    // console.log("fetchCategorieIds")
+    const response = await foodStore.fetchCategorieIds(arg)
+    //console.log("countArg: ",countArg,categoriesFood.value.length)
+   if(countArg == categoriesFood.value.length-1) {
+     if (response) {
+        console.log(reactiveFoodAllIdsState.value.length,"got allId's.. start pick on random menu")
+        fetchAllMenuData()
+        fetchRandomMenuID()
+        }
+    }
+}
+// //await all catergories
+async function loopcategoriesForIdfunction(){
+        const response = await foodStore.fetchFoodCategorie();
+        //console.log(response.categories[0].strCategory);
+        //when its done, do a foreach on the response - also awaiting 
+        console.log("got all ",response.categories.length,"categorie id's to loop trough")
+
+        response.categories.forEach(newfunction);
+        function  newfunction(item, index){
+        //  console.log("loopcategoriesForIdfunction", index, response.categories.length);
+           fetchCategorieIds(item.strCategory, index)
+           if(response.categories.length-1 === index){
+         //   console.log("Fire!")
+           }
+         }
+    }
 
 //COMPUTED
 const computeTitle = computed(function(){
@@ -53,67 +96,49 @@ const computeTitle = computed(function(){
 const computeCategorie = computed(function(){
     //fetchAllids()
     console.log("reactiveFoodCategorie..", reactiveFoodCategorie.value.categories)
-    if(reactiveFoodCategorie.value.categories){
+    //if(reactiveFoodCategorie.value.categories){
             console.log("oke")
-            console.log("computeCategorie..", foodStore.getCategorieFoodMenu)
+      //console.log("computeCategorie..", foodStore.getCategorieFoodMenu)
             return foodStore.getCategorieFoodMenu;
-    } 
+    //} 
 })
-
 
 // const computeMenuValue = computed(function(){
 //   return foodStore.getFoodMenuValue;
 // })
 
 const computeFetchedids = computed(function(){
-    console.log("computeFetchedids..", reactiveFoodAllIdsState.value)
-    //return reactiveFoodCategorieAllId.value;
-    return reactiveFoodAllIdsState.value;
-    // console.log("reset state.reactiveFoodCategorieAllId with dispatch")
-    //   foodStore.$patch((state) => {
-    //   state.reactiveFoodCategorieAllId.length = 0;
-    //   })
-})
-
-const computeShowAllIds = computed(function(){
-    console.log("computeShowALlIds..")
-    if(computeCategorie){
-       // getComputedIds()
-        return foodStore.getAllIds;
-    }
-})
-
-const showInstructions = computed(function(){
-    console.log("showInstructions..")
-  for(var key in reactiveFoodMenuDetails.value.meals) {
-    
-  return foodStore.getFoodMenuValue.meals[0].strInstructions;
-  }
+   // console.log("computeFetchedids..")
+    //if(reactiveFoodCategorieAllId){
+    //console.log("more than 100",reactiveFoodAllIdsState.value.length);
+    return foodStore.getAllIds 
+   // }
+    //return reactiveFoodAllIdsState.value.length;
 })
 
 //WATCHERS
+
 watch(computeCategorie, () => {
+  console.log("watch - triggered computeCategorie", computeCategorie);
   if ( computeCategorie ){
-        console.log("watch - triggered computeCategorie", computeCategorie.value);
-        getComputedIds()
-       
+       // getComputedIds()
+    }
+})
+
+watch(computeFetchedids, () => {
+  if ( computeFetchedids ){
+    console.log("watch - triggered computeFetchedids", computeFetchedids);
     }
 })
 
 onMounted(() => {
- console.log("onMounted?", reactiveOrderMenus.value[0])
-
- //fetchRandomMenuID()
- //foodStore.fetchFood();
- //foodStore.fetchFoodId();
- //foodStore.fetchFoodCategorie();
+ loopcategoriesForIdfunction()
 })
 
 </script>
 
 <template>
-     <menu-item-comp msg="We koken vandaag??"/>
-
+     <menu-item-comp msg="We koken vandaag..."/>
 </template>
 
 <style >

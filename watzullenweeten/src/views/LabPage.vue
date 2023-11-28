@@ -2,20 +2,19 @@
 import { reactive,computed,defineProps,ref,watch, onMounted } from "vue";
 
 import MenuItemComp from '../components/MenuItemComp.vue';
-import NavigationComp from "../components/NavigationComp.vue";
 
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
 const randomIdMenuRef = ref(0)
 const foodStore = useFoodStore();
-const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState } = storeToRefs(useFoodStore()); 
+const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
 
 
 //METHODS
 
 //foodStore.getAllIds;
-//foodStore.fetchFoodId(targetRandomMenuID())
+//foodStore.fetchRandomFoodId(targetRandomMenuID())
 //foodStore.fetchFoodCategorie();
 
 
@@ -42,49 +41,69 @@ function getRandomId(max:number) {
 }
 
 function targetRandomMenuID(){
-  console.log("targetRandomMenuID", foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)])
+ // console.log("targetRandomMenuID", foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)])
   return foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)]
 }
 
-
-
 function fetchRandomMenuID(){
-    console.log("fetchRandomMenuID")
-     foodStore.fetchFoodId(targetRandomMenuID())
+    // console.log("fetchRandomMenuID")
+     foodStore.fetchRandomFoodId(targetRandomMenuID())
     //console.log(response)
 }
 
+function fetchAllMenuData(){
+  console.log("fetchAllMenuData")
+    //foodStore.fetchFoodId(reactiveFoodAllIdsState.value.length)
+    for (let index = 0; index < 14; index++) {
+         foodStore.fetchFoodId(reactiveFoodAllIdsState.value[index])
+    }
+    //reactiveFoodAllIdsState.value.forEach(fetchCategorieIds);
+        // fetchCategorieIds(item,index)
+        // {        
+       // console.log("fetchAllMenuData",reactiveFoodAllIdsState.value.length)
+       // foodStore.fetchFoodId(item)
+       // }   
+}
+
 //await all catergoriesID's
-async function fetchCategorieIds(arg){
-    console.log("fetchCategorieIds")
+async function fetchCategorieIds(arg, countArg){
+    // console.log("fetchCategorieIds")
     const response = await foodStore.fetchCategorieIds(arg)
-    console.log(response)
-    //if (response) {
-        
+    console.log("countArg: ",countArg,categoriesFood.value.length)
+   if(countArg == categoriesFood.value.length-1) {
+     if (response) {
+        console.log(reactiveFoodAllIdsState.value.length,"got allId's.. start pick on random menu")
+        fetchAllMenuData()
         fetchRandomMenuID()
-    //}
+        }
+    }
 }
 //await all catergories
 async function loopcategoriesForIdfunction(){
         const response = await foodStore.fetchFoodCategorie();
-        console.log(response.categories[0].strCategory);
+        //console.log(response.categories[0].strCategory);
         //when its done, do a foreach on the response - also awaiting 
+        console.log("got all ",response.categories.length,"categorie id's to loop trough")
+
         response.categories.forEach(newfunction);
-        function  newfunction(item){
-            console.log("loopcategoriesForIdfunction");
-           fetchCategorieIds(item.strCategory)
+        function  newfunction(item, index){
+          console.log("loopcategoriesForIdfunction", index, response.categories.length);
+           fetchCategorieIds(item.strCategory, index)
+           if(response.categories.length-1 === index){
+            console.log("Fire!")
+           }
          }
     }
 
 //COMPUTED
-const computeTitle = computed(function(){
+const computeTitles = computed(function(){
   //console.log(foodStore.getFoodMenuTitle)
   //foodStore.getFoodMenuTitle;
   return foodStore.getFoodMenuTitle;
 })
 
 const computeCategorie = computed(function(){
-    console.log("reactiveFoodCategorie..", reactiveFoodCategorie.value.categories)
+    //console.log("reactiveFoodCategorie..", reactiveFoodCategorie.value.categories)
     if(reactiveFoodCategorie.value.categories){
             console.log("oke")
             console.log("computeCategorie..", foodStore.getCategorieFoodMenu)
@@ -96,24 +115,22 @@ const computeCategorie = computed(function(){
 // })
 
 const computeFetchedids = computed(function(){
-    console.log("computeFetchedids..", reactiveFoodAllIdsState.value)
-    //return reactiveFoodCategorieAllId.value;
-    return reactiveFoodAllIdsState.value;
-    // console.log("reset state.reactiveFoodCategorieAllId with dispatch")
-    //   foodStore.$patch((state) => {
-    //   state.reactiveFoodCategorieAllId.length = 0;
-    //   })
+    console.log("computeFetchedids..")
+    //if(reactiveFoodAllIdsState.value.length < 50){
+     //  console.log("more than 100",reactiveFoodAllIdsState.value.length);
+    foodStore.getAllIds 
+    //}
+    //return reactiveFoodAllIdsState.value.length;
 })
 
-const computeShowAllIds = computed(function(){
-    console.log("computeShowAllIds..")
-        return foodStore.getAllIds;
+
+const computeFetchedIdTitles = computed(function(){
+    return foodStore.getFoodMenuAllTitles;
 })
 
 const showInstructions = computed(function(){
-    console.log("showInstructions..")
+console.log("showInstructions..")
   for(var key in reactiveFoodMenuDetails.value.meals) {
-    
   return foodStore.getFoodMenuValue.meals[0].strInstructions;
   }
 })
@@ -131,36 +148,35 @@ onMounted(() => {
  console.log("onMounted?")
  //fetchRandomMenuID()
  //foodStore.fetchFood();
- //foodStore.fetchFoodId();
+ //foodStore.fetchRandomFoodId();
  //foodStore.fetchFoodCategorie();
  loopcategoriesForIdfunction()
+ //console.log("total id's",reactiveFoodAllIdsState.value.length)
+
 })
 
 </script>
 
 <template>
-     <menu-item-comp msg="We koken vandaag:" ref="userhistory" v-for="(food, index) in reactiveFoodMenuDetails.meals"
-                    :key="index" :index-prop="index" :voertuig-id-prop="index" :voertuig-name-prop="food.merk"
-                    :voertuig-soort-prop="food.voertuigsoort" :voertuig-kenteken-prop="food.kenteken"
-                    :voertuig-handelsbenaming-prop="food.handelsbenaming">
-                </menu-item-comp>
-
+     <menu-item-comp msg="We koken vandaag:" ref="userhistory">
+     </menu-item-comp>
     <div class="results"> 
       <button @click="foodStore.fetchFoodCategorie()">fetch categorie</button>
-      <!-- <button @click="foodStore.fetchFoodId()">fetch FoodId</button> -->
-      <button @click="getComputedIds()">get all id's {{ computeFetchedids.length }}</button>
+      <!-- <button @click="foodStore.fetchRandomFoodId()">fetch FoodId</button> -->
+      <!-- <button @click="getComputedIds()">get all id's {{ computeFetchedids.length }}</button> -->
       <button @click="fetchRandomMenuID()">pickMenu</button> pickedMenu is {{randomIdMenuRef}}
       <!-- <button @click="newFetch()">new fetch</button> -->
                 <!-- <h5>{{ currentFood }}</h5> -->
-                <h1>computeTitle:{{ computeTitle[0] }}</h1>
+                <h1>computeTitle:{{ computeTitles[0] }}</h1>
                 <h5 v-if="computeCategorie">total Categories: {{computeCategorie.length}}</h5>
                 <h5 v-else  > no categories yet</h5>
                 <h2>{{ computeCategorie }}</h2>
                 <h3>{{ categoriesFood.length }}</h3>
-
-                {{ computeShowAllIds }}
-               
-                
+                {{ computeFetchedids }}
+               <h4>computeFetchedidTitles</h4>
+                {{ computeFetchedIdTitles }}
+                <hr>
+                {{ alltitlesFromApi.length }}
                 <h3>instructions</h3>
                 <div>{{ showInstructions }}</div>
                 <img src="" alt="">
@@ -170,7 +186,7 @@ onMounted(() => {
                   </code>
                 </pre> -->
                 <ul v-for="(food, index) in reactiveFoodMenuDetails.meals">
-                   <li>{{ index }}{{ food.idMeal }}</li> 
+                   <li>index: {{ index }} & id:{{ food.idMeal }}</li> 
                 </ul>
                 <ul v-for="(food, index) in reactiveFoodMenuDetails.meals">
                    <li>{{ food.strIngredient1}}</li> 
@@ -180,6 +196,7 @@ onMounted(() => {
                    <li>{{ food.strIngredient5}}</li> 
                    <li>{{ food.strIngredient6}}</li> 
                 </ul>
+          
     </div>
   
 </template>

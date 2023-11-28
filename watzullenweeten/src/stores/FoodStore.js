@@ -24,7 +24,7 @@ export const useFoodStore = defineStore('FoodStore', {
           reactiveQuickMenus: ["poelier",
           "verse maaltijd deka",
           "verse slager maaltijd",
-          "Soep met brood&smeersels",
+          "Soep met brood&smeersels & salade",
           "Visboer gerecht",
           "Pannenkoeken & poffertjes",
           "Broodje hamburger",
@@ -34,7 +34,11 @@ export const useFoodStore = defineStore('FoodStore', {
           //reactiveDataSet
           reactiveFoodCategorie:[],
           reactiveFoodMenuDetails:[],
-          titleFoodMenu:[],
+          titlesFoodMenu:[],
+          reactiveOrderMenus:[],
+          reactiveAllMenuDetails:[],
+          allMenuDetailsFromApi:[],
+          alltitlesFromApi:[],
           categoriesFood:[],
           allFoodMenuData:[],
           reactiveFoodCategorieAllId:[],
@@ -45,20 +49,39 @@ export const useFoodStore = defineStore('FoodStore', {
     getters: {
       getFoodMenuTitle:function(state){
         //this.reactiveFoodMenuDetails.meals = 0;
-        for(var key in this.reactiveFoodMenuDetails.meals) {
-           console.log("key first loop",key)
-           console.log(this.reactiveFoodMenuDetails.meals[key].strMeal)
+        for(var key in this.reactiveFoodMenuDetails.meals) {    
+        //console.log("key first loop",key)
+        //console.log(this.reactiveFoodMenuDetails.meals[key].strMeal)
            //push to beginning of array
-           state.titleFoodMenu.unshift(this.reactiveFoodMenuDetails.meals[key].strMeal)
-            for (var key1 in this.reactiveFoodMenuDetails.meals[key1]) {
+           state.titlesFoodMenu.unshift(this.reactiveFoodMenuDetails.meals[key].strMeal)
+            //for (var key1 in this.reactiveFoodMenuDetails.meals[key1]) {
                 // console.log(this.reactiveFoodMenuDetails.meals[key][key1].strMeal)
                 // state.titleFoodMenu.push(this.reactiveFoodMenuDetails.meals[key][key1].strMeal)
-            }
+            //}
          }
-         return state.titleFoodMenu;
+         return state.titlesFoodMenu;
+      },
+      getFoodMenuAllTitles:function(state){
+        for(var key in this.reactiveAllMenuDetails.meals) {
+          // console.log("GET All titles",key,this.reactiveAllMenuDetails.meals[key].strMeal)
+           //console.log("strMeal",this.reactiveAllMenuDetails.meals[key].strMeal)
+           //push to beginning of array
+           state.alltitlesFromApi.push(this.reactiveAllMenuDetails.meals[key].strMeal)
+         }
+         return state.alltitlesFromApi;
       },
       getFoodMenuValue:function(state){
         return state.reactiveFoodMenuDetails;
+      },
+      getAllFoodMenuValues:function(state){
+        for(var key in this.reactiveAllMenuDetails.meals) {
+         // console.log("GET All values:",this.reactiveAllMenuDetails.meals[key].idMeal,this.reactiveAllMenuDetails.meals[key])
+          //console.log("strMeal",this.reactiveAllMenuDetails.meals[key].strMeal)
+          //push to beginning of array
+          state.allMenuDetailsFromApi.push(this.reactiveAllMenuDetails.meals[key])
+        }
+        //console.log(state.allMenuDetailsFromApi.length)
+        return state.allMenuDetailsFromApi;
       },
       getCategorieFoodMenu:function(state){
         console.log("getCategorieFoodMenu..", this.reactiveFoodCategorie.length)
@@ -86,7 +109,7 @@ export const useFoodStore = defineStore('FoodStore', {
         console.log("fetching fetchFoodCategorie")
           const response = await fetch(`https://www.themealdb.com/api/json/v1/1/categories.php`
           ).then(function (response) {
-            console.log(response);
+           // console.log(response);
             return response.json();            
           }).catch(error => {
             //request failed
@@ -100,26 +123,35 @@ export const useFoodStore = defineStore('FoodStore', {
           // const firstresponse = await this.fetchFoodCategorie();
           // console.log("firstresponse",firstresponse);
           // this.tableData = response;
-          console.log("fetching fetchFoodCategorieIds")
+         // console.log("fetching fetchFoodCategorieIds")
             const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${foodcatArg}`
             ).then(function (response) {
-              console.log(response); 
+           //console.log(response); 
               return response.json();            
             });
            this.reactiveFoodCategorieAllId = response;
            return response;
         },
-        async fetchFoodId(randomArg){
-          console.log("fetching fetchFoodId..", randomArg)
+        async fetchRandomFoodId(randomArg){
+          console.log("fetching fetchRandomFoodId..", randomArg)
             const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${randomArg}`
             ).then(function (response) {
-               console.log(response);
+          //     console.log(response);
               return response.json();            
             });
           this.reactiveFoodMenuDetails = response;
          // console.log(this.reactiveFoodMenuDetails)
+        },
+        async fetchFoodId(idArg){
+         // console.log("fetching fetchFoodId..", idArg)
+            const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idArg}`
+            ).then(function (response) {
+            //   console.log(response);
+              return response.json();            
+            });
+          this.reactiveAllMenuDetails = response;
+         // console.log(this.reactiveFoodMenuDetails)
         }
-
     }
   })
  
