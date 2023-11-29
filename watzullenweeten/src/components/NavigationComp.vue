@@ -32,10 +32,17 @@ const activeState = ref(false)
 
 <style scoped lang="scss">
 .logo{
-  display: flex;
+
   margin-left: auto;
+  align-content: center;
+  flex-wrap: wrap;
   padding: 0;
   height: auto;
+  display: none;
+  @media only screen and (min-width: 768px) {
+    display: flex;
+      }
+
   img{
     width: auto;
     height: auto;
@@ -48,7 +55,11 @@ const activeState = ref(false)
   margin-inline-start: 0;
   margin-inline-end: 0;
   padding-inline-start: 0px;
-  display: flex;
+      flex-direction:column;
+      @media only screen and (min-width: 768px) {
+        flex-direction:row;
+      }
+
   li{
     padding: 1rem;
     text-decoration: none;
@@ -68,7 +79,8 @@ const activeState = ref(false)
           color:#35eb9a
         }
         &.nav-link{
-          padding: 1rem;
+          padding: 0rem 1rem;
+          line-height: 2rem;
           display: block;
           &:hover{
               color:#f2f2f2

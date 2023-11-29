@@ -167,12 +167,14 @@ onMounted(() => {
   <section>
     <button ref="CTAbutton" type="button" enabled class="CTA" @click="start()">Wat koken we vandaag? </button>
   </section>
-  <section class="menu">
+  <section class="menuDetails">
     <h4 v-if="showMenuId">Menu: {{ showMenuId }}</h4>
     <h4 v-else> Menu: <i>no id found</i></h4>
     <h3>Instructions</h3>
     <div v-if="showInstructions">
-      {{ showInstructions}}
+      <p>
+        {{ showInstructions}}
+      </p>
     </div>
     <div v-else>
       no instructions found
@@ -278,8 +280,8 @@ onMounted(() => {
 
 
 header {
-  margin-left: -2rem;
-  margin-right: -2rem;
+  // margin-left: -2rem;
+  // margin-right: -2rem;
   min-height: 350px;
   background-color: #155f3e;
   display: flex;
@@ -316,13 +318,13 @@ header {
     opacity: 1;
     height: auto;
     overflow:inherit;
+    margin-bottom:1rem;
   }
 }
 .highlight {
   display: inline;
 }
 .ingredients{
-  
   display: flex;
   justify-content: flex-start;
     flex-direction: row;
@@ -330,6 +332,7 @@ header {
     flex-wrap: wrap;
     margin-block-start: 0px;
     padding-inline-start: 0px;
+    margin-block-end: 0px;
 
   li{
     list-style: none;
@@ -351,9 +354,7 @@ header {
   }
 }
 
-p {
-  font-size: 2rem;
-}
+
 
 button {
   width: 300px;
@@ -368,7 +369,7 @@ section {
   flex-direction: column;
   flex-wrap: wrap;
   align-content: center;
-  padding: 2rem;
+  //padding: 2rem;
   justify-content: flex-start;
 
   &.content {
@@ -377,7 +378,7 @@ section {
   }
 }
 
-.menu {
+.menuDetails {
   padding: 2rem;
   background-color: #155f3e;
   color: #cac5c5;
