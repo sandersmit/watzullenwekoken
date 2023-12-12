@@ -1,6 +1,53 @@
-@import "./theme/colors.scss";
+// Option A: Include Complete Bootstrap
+//@import "bootstrap/scss/bootstrap"; 
+
+// Custom.scss
+// Option B: Include parts of Bootstrap
+//////////////// Configuration
+// // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+ @import "./bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here 
+// copieing vars from _variables.scss - & -removing "!default" for using - in:
+// custom_variables.scss 'custom defaults'
+@import "./theme/variables_custom";
 
 
+// 3. Include remainder of required Bootstrap stylesheets
+@import "./bootstrap/scss/variables";
+@import "./bootstrap/scss/variables-dark";
+
+// 4. Include any default map overrides here
+
+// 5. Include remainder of required parts
+@import "./bootstrap/scss/maps";
+@import "./bootstrap/scss/mixins";
+
+// // 6. Optionally include any other parts as needed
+@import "./bootstrap/scss/utilities";
+@import "./bootstrap/scss/root";
+@import "./bootstrap/scss/reboot";
+@import "./bootstrap/scss/type";
+////////////////////Layout & components
+@import "./bootstrap/scss/images";
+@import "./bootstrap/scss/containers";
+@import "./bootstrap/scss/grid";
+@import "./bootstrap/scss/forms";
+@import "./bootstrap/scss/buttons";
+@import "./bootstrap/scss/nav";
+
+// Helpers
+@import "./bootstrap/scss/helpers";
+
+
+// 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
+@import "./bootstrap/scss/utilities/api";
+
+//8. Add additional custom code here
+@import "./theme/theme.scss";
+@import "./theme/typography";
+@import "./theme/spaces";
+//custom styles for testing
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -17,28 +64,27 @@
     -webkit-text-size-adjust: 100%;
   }
   
-html{
-  body {
-      margin: 0;
-      display: flex;
-      place-items: center;
-      min-width: 320px;
-      min-height: 100vh;
-    h1 {
-      font-size: 3.2em;
-      line-height: 1.1;
-    }
-    h4{
-      text-align: right;
-      color: $gray-dark-5;
-      margin:0px;
-    }
-    
-    p{
-      font-size: 1.5rem;
+  html{
+    body {
+        margin: 0;
+        display: flex;
+        place-items: center;
+        min-width: 320px;
+        min-height: 100vh;
+      h1 {
+        line-height: 1.1;
+      }
+      h4{
+        text-align: right;
+        color: $gray-dark-5;
+        margin:0px;
+      }
+      
+      p{
+        font-size: 1.5rem;
+      }
     }
   }
-}
 
 .results{
   margin-top: 1rem;
@@ -49,28 +95,28 @@ html{
  }
 
 
-a{
-  &.accord{
-    cursor: pointer;
-    &:hover{
-      opacity: 0.7;
-    }
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    svg{
-      width: 1.5rem;
-      margin-left: 1rem;
-      transform: rotate(0deg);
-    }
-    &.open{
+  a{
+    &.accord{
+      //padding: 1rem;
+      cursor: pointer;
+      &:hover{
+        opacity: 0.7;
+      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
       svg{
-        transform: rotate(-145deg);
+        width: 1.5rem;
+        margin-left: 1rem;
+        transform: rotate(0deg);
+      }
+      &.open{
+        svg{
+          transform: rotate(-145deg);
+        }
       }
     }
   }
- 
-}
 
 
 
@@ -116,48 +162,16 @@ a{
     }
   }
   
-  @media (prefers-color-scheme: light) {
-    :root {
-      color: #213547;
-      background-color: #ffffff;
-    }
-    a:hover {
-      color: #747bff;
-    }
-    button {
-      background-color: #f9f9f9;
-    }
-  }
+  // @media (prefers-color-scheme: light) {
+  //   :root {
+  //     color: #213547;
+  //     background-color: #ffffff;
+  //   }
+  //   a:hover {
+  //     color: #747bff;
+  //   }
+  //   button {
+  //     background-color: #f9f9f9;
+  //   }
+  // }
   
-body{
-    background-color: $gray-dark-5;
-        article{
-            background-color: $gray-dark-5;
-        }
-        section{
-            background-color: $gray-dark-5;
-        }
-        h1,h2,h3,h4
-        {
-            color:$gray-light-4;
-        }
-        h1{
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        h4{
-          text-align: right;
-          color: $gray-dark-5;
-        }
-        a{
-            font-weight: 500;
-            color:$green-lighter;
-            text-decoration: inherit;
-                &.nav-link{
-                    color:$gray-light-4;
-                }
-                &:hover{
-                    color: $gray-light-3;  
-                }
-        }   
-}

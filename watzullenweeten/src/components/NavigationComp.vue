@@ -41,6 +41,8 @@ const activeState = ref(false)
   display: none;
   @media only screen and (min-width: 768px) {
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
       }
 
   img{
@@ -58,6 +60,10 @@ const activeState = ref(false)
       flex-direction:column;
       @media only screen and (min-width: 768px) {
         flex-direction:row;
+        display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
       }
 
   li{

@@ -1,7 +1,56 @@
 //Import custom SCSS
-//typo
-$font-small: 0.8rem;
-$font-medium: 1rem;
-$font-large: 1.5rem;
-$font-large: 2rem;
-$font-extra-large:3rem;
+body{
+   
+        article{
+            
+        }
+        section{
+       
+        }
+        h2,h3,h4
+        {
+           
+        }
+        h1{
+            font-size: $font-large;
+            @media only screen and (min-width: 768px) {
+                font-size: $font-extra-large;
+              }
+        }
+        h4{
+         
+        }
+        a{
+            
+            
+                &.nav-link{
+                   
+                }
+                &:hover{
+                    
+                }
+        } 
+        form{
+            
+            legend{
+                font-size: $font-medium ;
+            }
+            label{
+               
+            }
+        }
+        .number {
+           
+        } 
+        .questionmark {
+            
+        }
+        .results{
+            
+            
+            h1{
+                
+            }  
+        } 
+      
+}

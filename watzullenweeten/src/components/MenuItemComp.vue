@@ -18,6 +18,9 @@ const props =  defineProps({
     msg: {
         type: String,
         default: "Edit Detailpage",
+    },
+    menuFilterVal:{
+        type: Object
     }
 });
 
@@ -29,29 +32,16 @@ const CTAbutton = ref(null)
 //const refTarget = ref(null)
 const progress = ref(false)
 const toggleValue = ref(false);
-const menuNumberRef = ref(0)
-const totalApiMenuTitles = ref([])
-
-const totalMenus = ref(
-  ["poelier",
-  "verse maaltijd deka",
-  "verse slager maaltijd",
-  "Soep met brood&smeersels",
-  "Visboer gerecht",
-  "Pannenkoeken & poffertjes",
-  "Broodje hamburger",
-  "Hotdogs",
-  "Frituren",
-  "Chickenwings"])
-
+const menuNumberRef = ref(0);
+const totalApiMenuTitles = ref([]);
 const intervalReducer = 0.5;
 let intervalNumber = ref(500) // 1sec
 const countdown = ref(5)
 const intervalID = ref(0)
-const menusReactive = reactive({
-        param1: "some menu",
-        param2: countdown.value,
-        param3: [1,2,3,4],
+const typeMenu = reactive({
+        param1: [foodStore.reactiveOrderMenus,props.menuFilterVal.param2],
+        param2: [foodStore.reactiveQuickMenus,props.menuFilterVal.param2],
+        param3: [foodStore.getFoodMenuAllTitles,props.menuFilterVal.param2]
     })
 
 //METHODS
@@ -91,7 +81,22 @@ const computedMenuNumber = computed(
       return giveNumber();
     }
   )
-const computeFetchedIdTitles = computed(function(){
+
+const computeReactiveOrderMenu = computed(function(){
+   if ((props.menuFilterVal.param2) && (props.menuFilterVal.param3===0)) {
+    typeMenu.param1[1] === props.menuFilterVal.param2;
+    return typeMenu.param1[0]; 
+   }else{
+    typeMenu.param1[1] === props.menuFilterVal.param2;
+    return typeMenu.param1[0];
+   }
+})
+
+
+
+
+const computeReactiveOrderMenu3 = computed(function(){
+  // console.log(selectedCookType.value)
     return foodStore.getFoodMenuAllTitles;
 })
 
@@ -101,16 +106,32 @@ const computeTitles = computed(function(){
 
 const showInstructions = computed(function(){
   //showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value
-  for (let i in foodStore.getAllFoodMenuValues) {
+ //NOT VALID ACCORING ESLINT..
+  for (let _i in foodStore.getAllFoodMenuValues) {
    return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
   }
+  //WELL VALID ACCORING ESLINT..
+  // if (foodStore.getAllFoodMenuValues > 0) {
+  //   return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
+  // } else {
+  //   return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
+  // }
 })
 
 const showMenuId = computed(function(){
-  for (let i in foodStore.getAllFoodMenuValues) {
+  for (let _i in foodStore.getAllFoodMenuValues) {
    return foodStore.getAllFoodMenuValues[menuNumberRef.value].idMeal
   }
 })
+
+// const foo = computed(() => {
+//       if (foobar.bar) {
+//         return foobar.baz
+//       } else {
+//         return foobar.baf
+//       }
+//     })
+//     const bar = computed(() => false)
 
 const showMenuIngredients = computed(function(){
   for (const [key, value] of Object.entries(foodStore.getAllFoodMenuValues)) {
@@ -128,7 +149,7 @@ const checkToggleStatus = computed(function(){
 })
 
 //WATCHERS
-watch(countdown, (choose, prevCount) => {
+watch(countdown, (_choose, _prevCount) => {
   if ( countdown.value == 0){
        //watch - triggered clearInterval", countdown.value
         clearInterval(intervalID.value );
@@ -136,7 +157,7 @@ watch(countdown, (choose, prevCount) => {
     }
 })
 
-watch(menuNumberRef, (n) => {
+watch(menuNumberRef, (_n) => {
   //watch number
   //replaces text:
   gsap.to(".highlight", {duration: 1, text: alltitlesFromApi.value[menuNumberRef.value], delay: 1});
@@ -151,21 +172,32 @@ onMounted(() => {
 <template>
     <header>
     <h6>Totaal aantal menus: 
-        <span class="number">
+        <!-- <span class="number">
         {{ alltitlesFromApi.length }}
+      </span> -->
+      <span class="number" v-if="props.menuFilterVal.param3===0">
+        {{ computeReactiveOrderMenu.length }}
+      </span>
+      <span class="number" v-if="props.menuFilterVal.param3===1">
+        {{ computeReactiveOrderMenu2.length }}  
+      </span>
+      <span class="number" v-if="props.menuFilterVal.param3===2">
+        {{ computeReactiveOrderMenu3.length }}
       </span>
     </h6>
-      <h1>{{ msg }}
-        <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeFetchedIdTitles[menuNumberRef] }}</span></div>
+    <div class="headermain">
+      <h1>{{ props.msg }}{{props.menuFilterVal}}
+        <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeReactiveOrderMenu3[menuNumberRef] }}</span></div>
       </h1>
+    </div>
     </header>
   <section class="content">
     <Transition name="fadeTrans"> 
-        <span  v-if="!progress" class="questionmark">?</span>
+        <span  v-if="!progress" class="questionmark my-md-5">?</span>
     </Transition>
   </section>
   <section>
-    <button ref="CTAbutton" type="button" enabled class="CTA" @click="start()">Wat koken we vandaag? </button>
+    <button ref="CTAbutton" type="button" enabled class="CTA my-md-2" @click="start()">Wat koken we vandaag? </button>
   </section>
   <section class="menuDetails">
     <h4 v-if="showMenuId">Menu: {{ showMenuId }}</h4>
@@ -180,7 +212,7 @@ onMounted(() => {
       no instructions found
     </div>
   <div v-if="showMenuIngredients">
-    <a @click="togleClassname($event)" class="accord" >
+    <a @click="togleClassname($event)" class="accord py-md-2" >
     <h3>Ingredienten ({{showMenuIngredients.length}})</h3>     
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
         <title>plus circle</title>
@@ -195,7 +227,7 @@ onMounted(() => {
   <div v-else>
     no Ingredients found
   </div>
-  <a @click="togleClassname($event)" class="accord" >
+  <a @click="togleClassname($event)" class="accord py-md-2" >
     <h3>All menus </h3>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
         <title>plus circle</title>
@@ -286,6 +318,15 @@ header {
   background-color: #155f3e;
   display: flex;
   flex-direction: column;
+  
+  .headermain{
+    display: flex;
+    align-items: center;
+    flex-basis: auto;
+    display: flex;
+    justify-content: center;
+    flex: 1;
+  }
 
   h1 {
     padding: 0rem 1rem;
@@ -300,6 +341,7 @@ header {
   h6 {
     text-align: right;
     padding-right: 2rem;
+    padding-top: 2rem;
     font-size: 1rem;
     display: flex;
     flex-wrap: wrap;
@@ -361,7 +403,12 @@ button {
   padding: 1rem;
   margin: 0 auto;
   align-self: end;
-  border: solid 1px #35eb9a;
+  font-weight: 600;
+  border: solid 2px #35eb9a;
+  font-family: monospace;
+  &:hover{
+    background-color: #242424;
+  }
 }
 
 section {
@@ -392,8 +439,8 @@ section {
 .questionmark {
   font-size: 9rem;
   font-weight: 600;
-  width: 9rem;
-  height: 9rem;
+  width: 10rem;
+    height: 10rem;
   position: relative;
   display: block;
   border-radius: 100%;
@@ -404,8 +451,6 @@ section {
 }
 .number {
   border-radius: 100%;
-  border: solid 2px #f1f1f1;
-  background-color: #242424;
   padding:0.5rem;
   margin: 0px;
     line-height: 1em;

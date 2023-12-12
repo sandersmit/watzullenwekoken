@@ -2,14 +2,22 @@
 import { reactive,computed,defineProps,ref,watch, onMounted } from "vue";
 
 import MenuItemComp from '../components/MenuItemComp.vue';
+import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
 const randomIdMenuRef = ref(0)
+// const selectedCookType = ref("")
+const selectedCookType = reactive({
+        param1: "selectedCookType",
+        param2: false,
+        param3: 0
+    })
+   
 const foodStore = useFoodStore();
 const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
-
+const cookingTypes = ['afhalen','snel koken','uitgebreid koken']
 
 //METHODS
 
@@ -31,6 +39,24 @@ function fetchAllMenuData(){
          foodStore.fetchFoodId(reactiveFoodAllIdsState.value[index])
     }
 }
+
+function emitCheckboxValue(argument) {
+            //console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
+            //   ,triggerd by the child component to parent component`)
+          
+            if(argument.thisSelected){
+              selectedCookType.param1 = argument.thisCheckboxName;
+              selectedCookType.param2 = argument.thisSelected;
+              selectedCookType.param3 = argument.thisId;
+            }else{
+              selectedCookType.param1 = "nothing selected";
+              selectedCookType.param2 = argument.thisSelected;
+              selectedCookType.param3 = 0;
+            }
+           
+            console.log("selected is:", selectedCookType.param3,selectedCookType.param1)
+            
+          }
 
 //await all catergoriesID's
 async function fetchCategorieIds(arg, countArg){
@@ -56,6 +82,10 @@ async function loopcategoriesForIdfunction(){
     }
 
 //COMPUTED
+const computeCookingType = computed(function(){
+  return selectedCookType;
+})
+
 const computeTitles = computed(function(){
   return foodStore.getFoodMenuTitle;
 })
@@ -87,7 +117,20 @@ onMounted(() => {
 </script>
 
 <template>
-     <menu-item-comp msg="We koken vandaag:" ref="userhistory">
+  <form class="m-4" action="">
+    <fieldset>
+      <div class="row">
+      <legend>type gerechten:</legend>
+      </div>
+      <div class="row">
+        <filter-checkbox-comp v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
+                    :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
+                    </filter-checkbox-comp>
+      </div>
+  </fieldset>
+</form>
+     
+     <menu-item-comp msg="We koken vandaag:" ref="userhistory" :menu-filter-val="computeCookingType">
      </menu-item-comp>
     <div class="results"> 
       <button @click="foodStore.fetchFoodCategorie()">fetch categorie</button>

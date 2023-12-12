@@ -7,7 +7,6 @@ export const useFoodStore = defineStore('FoodStore', {
   //The state is defined as a function returning the initial state
     state: function () {
         return {
-          currentFood:"only the best",
           //optional data
           reactiveOrderMenus: [
           "Doner",
@@ -22,7 +21,8 @@ export const useFoodStore = defineStore('FoodStore', {
           "Hamburger menu"],
           
           //optional data
-          reactiveQuickMenus: ["poelier",
+          reactiveQuickMenus: [
+          "poelier",
           "verse maaltijd deka",
           "verse slager maaltijd",
           "Soep met brood&smeersels & salade",
@@ -31,16 +31,16 @@ export const useFoodStore = defineStore('FoodStore', {
           "Broodje hamburger",
           "Hotdogs",
           "Frituren",
-          "Chickenwings"],
+          "Chickenwings",
+          "Taco's"],
 
           //reactiveDataSet
+          alltitlesFromApi:[],
           reactiveFoodCategorie:[],
           reactiveFoodMenuDetails:[],
           titlesFoodMenu:[],
-          reactiveOrderMenus:[],
           reactiveAllMenuDetails:[],
           allMenuDetailsFromApi:[],
-          alltitlesFromApi:[],
           categoriesFood:[],
           allFoodMenuData:[],
           reactiveFoodCategorieAllId:[],

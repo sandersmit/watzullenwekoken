@@ -1,0 +1,72 @@
+//Import custom SCSS
+body{
+    background-color: $gray-dark-5;
+        article{
+            background-color: $gray-dark-5;
+        }
+        section{
+            background-color: $gray-dark-5;
+        }
+        h1,h2,h3,h4
+        {
+            color:$gray-light-4;
+        }
+        h1{
+            margin-bottom: 1rem;
+        }
+        h4{
+          text-align: right;
+          color: $gray-dark-5;
+        }
+        a{
+            font-weight: 500;
+            color:$green-lighter;
+            text-decoration: inherit;
+                &.nav-link{
+                    color:$gray-light-4;
+                }
+                &:hover{
+                    color: $gray-light-3;  
+                }
+        } 
+        form{
+            display: flex;
+            flex-direction: column;
+            legend{
+                color: $gray-dark-1;
+                @include make-col(12);
+            }
+            label{
+                color:$gray-dark-1;
+                padding-left: 1rem;
+
+            }
+            .form-check{
+                text-align: left;
+               //    display: flex;
+               
+            @include make-col(12);
+                @media only screen and (min-width: 768px) {
+                   background-color:$gray-dark-4;
+                    @include make-col(3);
+                  }
+            }
+        }
+        .number {
+            border-radius: 100%;
+            border: solid 2px $gray-dark-4;
+            background-color: transparent;
+        } 
+        .questionmark {
+            background-color: $gray-dark-5;
+            color: $gray-light-5;
+        }
+        .results{
+            background-color: $gray-light-5;
+            
+            h1{
+                color: blue;
+            }  
+        } 
+      
+}

@@ -13,12 +13,11 @@ import { createPinia } from 'pinia'
 //import router - createRouter and history.. from 'vue-router' npm dependancy
 import router from './router';
 
-//pages
-import MenuItemComp from './components/MenuItemComp.vue'
-
 //components
 import MenuItemComp from './components/MenuItemComp.vue'
 import NavigationComp from './components/NavigationComp.vue'
+import FilterCheckboxComp from './components/forms/FilterCheckboxComp.vue'
+
 
 //setting a constant for the imported 'main/global' AppName
 const WatZullenWeEtenApp = createApp(AppName);
@@ -26,9 +25,10 @@ const WatZullenWeEtenApp = createApp(AppName);
 //setting a constant for the imported 'createPinia' call it : pinia
 const pinia = createPinia()
 
-//import related components
-WatZullenWeEtenApp.component('menu-item-comp', MenuItemComp);
+//connect components to app instance
+WatZullenWeEtenApp.component('filtercheckbox-comp', MenuItemComp);
 WatZullenWeEtenApp.component('navigation-comp', NavigationComp);
+WatZullenWeEtenApp.component('filter-checkbox-comp', FilterCheckboxComp);
 
 //adding router
 WatZullenWeEtenApp.use(router);
