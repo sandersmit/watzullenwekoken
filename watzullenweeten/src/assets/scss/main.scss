@@ -112,7 +112,7 @@
       }
       &.open{
         svg{
-          transform: rotate(-145deg);
+          transform: rotate(-315deg);
         }
       }
     }
@@ -161,6 +161,8 @@
       }
     }
   }
+
+  
   
   // @media (prefers-color-scheme: light) {
   //   :root {

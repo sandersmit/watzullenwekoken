@@ -1,35 +1,29 @@
 <template>
     <div class="form-check">
-        <input type="checkbox" class="form-check-input"
-        :id="`${checkboxValueProp}`"
+        <label :for="`${checkIdProp}`" class="form-check-label">{{checkboxNameProp}}</label>
+        
+        <!-- <input type="checkbox" class="form-check-input"
+        :id="`${checkIdProp}`"
         :class="checkIdProp==0 ?'active':''" 
         :value="`${checkboxValueProp}`" 
-        :for="`${checkIdProp}`"
         @click="checkboxValuePropEmit"
         v-model="selected"
-        >                                 
-        <label :for="`${checkboxValueProp}`" class="form-check-label">{{checkboxNameProp}}</label>
-        
+        ref="checkboxEl"
+        >  -->
+        <input type="checkbox" class="form-check-input"
+        :id="`${checkIdProp}`"
+        :class="checkIdProp==0 ?'active':''" 
+        :value="`${checkboxValueProp}`" 
+        @click="checkboxValuePropEmit"
+        ref="checkboxEl"
+        >                                                             
     </div>
-    <!-- {{ this.togglecheckboxEl[0] }} -->
-    <!-- {{ this.selected }} -->
-    <!-- {{ this.returnChecked }} -->
 </template>
 
 <script>
-// import { useRoute } from 'vue-router';
-//import { onMounted } from "vue";
-import { ref } from 'vue'
 
 export default{
     //using composition api with setup() as am option from the option API
-      setup() {
-       // const togglecheckboxEl = ref([])
-     
-            return{
-              //  togglecheckboxEl
-            }
-        },
     //end using composition api with setup()
     //Make Vue aware of the props
     //use them with the this.propname - in the whole component. 
@@ -38,7 +32,7 @@ export default{
         //each prop can be an object -> with own key:value to comunicate for developers on how it works. 
         // 1 to make sure the type , string or number or boolean etc.. 
         // 2 to check if the prop is required
-        checkIdProp:{
+            checkIdProp:{
                 type:Number,
                 required: true
             },
@@ -68,19 +62,23 @@ export default{
         //     console.log(`toggle ${this.bedrijfsnaamProp} test6 ${this.bedrijfsUrlArgumentProp}`);
         // },
         setCheckbox(){
-           console.log(this.togglecheckboxEl[0])
-           // this.checkboxEl.checked = !this.checkboxEl.checked;
+           if(this.checkIdProp==0){
+            console.log(this.$refs.checkboxEl,this.checkIdProp)
+            this.$refs.checkboxEl.checked;
+           }
+           
+           //this.checkIdProp==0 ? this.$refs.checkboxEl.checked : !this.$refs.checkboxEl.checked;
            //this.checkboxEl.checked = !this.checkboxEl.checked;
         },
         checkboxValuePropEmit:function(){  
-           // console.log(this.togglecheckboxEl)
+           // console.log(this.checkboxEl)
            //this.setCheckbox();
             //LET OP!
             //emitting custom event 'emit-custom-event' => to parent comp
             // passing 'custom event name' + argument
             this.selected =! this.selected;
             console.log("this.selected?:"+ this.selected)
-            //console.log("checkboxValuePropEmit:"+ this.togglecheckboxEl[0])
+            //console.log("checkboxValuePropEmit:"+ this.checkboxEl[0])
            // console.log("checkboxValuePropEmit:"+ this.checkboxNameProp)
            const emitCheckboxProps = {
             'thisSelected':this.selected,
@@ -124,10 +122,13 @@ export default{
     },
     //lifecyclehooks voor fetchen API data. 
     beforeCreate() { 
-   
+       
+    },
+    mounted(){
+        this.setCheckbox()
     },
     created() {
-     
+       
     }
 }
 </script>

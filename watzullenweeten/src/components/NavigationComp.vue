@@ -58,6 +58,7 @@ const activeState = ref(false)
   margin-inline-end: 0;
   padding-inline-start: 0px;
       flex-direction:column;
+      display: none;
       @media only screen and (min-width: 768px) {
         flex-direction:row;
         display: flex;

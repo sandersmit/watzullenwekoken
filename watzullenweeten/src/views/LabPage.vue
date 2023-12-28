@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive,computed,defineProps,ref,watch, onMounted } from "vue";
+import { reactive,computed,ref,onMounted } from "vue";
 
 import MenuItemComp from '../components/MenuItemComp.vue';
 import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
@@ -7,19 +7,28 @@ import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
+const filtercheckboxcompRef = ref(null)
+const menuitemcompRef= ref(null)
 const randomIdMenuRef = ref(0)
-// const selectedCookType = ref("")
+
+
 const selectedCookType = reactive({
         param1: "selectedCookType",
         param2: false,
-        param3: 0
+        param3: null
     })
    
 const foodStore = useFoodStore();
-const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
-const cookingTypes = ['afhalen','snel koken','uitgebreid koken']
+const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
+const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken']
 
 //METHODS
+function setCheckbox(){
+  if(this.checkIdProp==0){
+  console.log(this.$refs.checkboxEl,this.checkIdProp)
+  this.$refs.checkboxEl.checked;
+  }
+}
 
 function getRandomId(max:number) {
   randomIdMenuRef.value = Math.floor(Math.random() * max);
@@ -42,20 +51,14 @@ function fetchAllMenuData(){
 
 function emitCheckboxValue(argument) {
             //console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
-            //   ,triggerd by the child component to parent component`)
-          
-            if(argument.thisSelected){
+            //,triggerd by the child component to parent component`)
               selectedCookType.param1 = argument.thisCheckboxName;
               selectedCookType.param2 = argument.thisSelected;
               selectedCookType.param3 = argument.thisId;
-            }else{
-              selectedCookType.param1 = "nothing selected";
-              selectedCookType.param2 = argument.thisSelected;
-              selectedCookType.param3 = 0;
-            }
-           
-            console.log("selected is:", selectedCookType.param3,selectedCookType.param1)
-            
+              console.log("selected is:", 
+              selectedCookType.param1, 
+              selectedCookType.param2,
+              selectedCookType.param3) 
           }
 
 //await all catergoriesID's
@@ -82,10 +85,6 @@ async function loopcategoriesForIdfunction(){
     }
 
 //COMPUTED
-const computeCookingType = computed(function(){
-  return selectedCookType;
-})
-
 const computeTitles = computed(function(){
   return foodStore.getFoodMenuTitle;
 })
@@ -117,22 +116,28 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="results">
+    {{ selectedCookType }}
+  </div>
   <form class="m-4" action="">
     <fieldset>
       <div class="row">
       <legend>type gerechten:</legend>
       </div>
       <div class="row">
-        <filter-checkbox-comp v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
+        <filter-checkbox-comp ref="filtercheckboxcompRef" v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
                     :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
-                    </filter-checkbox-comp>
+        </filter-checkbox-comp>
+        <!-- <input type="checkbox" class="form-check-input" id="4" checked>    -->
       </div>
   </fieldset>
 </form>
-     
-     <menu-item-comp msg="We koken vandaag:" ref="userhistory" :menu-filter-val="computeCookingType">
+<!-- menuitemcompRef is a reference to "defineExpose method" to recieve a method or reactive state from child to parrent component -->
+     <menu-item-comp used-on-page="lab" msg="We koken vandaag:" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType">
      </menu-item-comp>
     <div class="results"> 
+      <button @click="filtercheckboxcompRef.defineExposeMethod">defineExpose method - FilterCheckboxComp</button>
+      <button @click="menuitemcompRef.defineExposeMethod2">defineExpose method - MenuItemComp</button>
       <button @click="foodStore.fetchFoodCategorie()">fetch categorie</button>
       <button @click="fetchRandomMenuID()">pickMenu</button> pickedMenu is {{randomIdMenuRef}}
                 <h1>computeTitle:{{ computeTitles[0] }}</h1>
@@ -146,7 +151,7 @@ onMounted(() => {
                 <hr>
                 {{ alltitlesFromApi.length }}
                 <h3>instructions</h3>
-                <div>{{ showInstructions }}</div>
+                <!-- <div>{{ showInstructions }}</div> -->
                 <img src="" alt="">
                 <pre>
                   <code>

@@ -13,12 +13,13 @@ export const useFoodStore = defineStore('FoodStore', {
           "Pejo",
           "Pizza",
           "Kibbeling",
-          "Moeders Sate",
+          "spareribsExspress Sate & verse patat frituren",
           "Chinees",
           "Spareribs",
           "Sushi",
           "Rotti",
-          "Hamburger menu"],
+          "Hamburger menu Huesmolen",
+           ],
           
           //optional data
           reactiveQuickMenus: [
@@ -33,8 +34,9 @@ export const useFoodStore = defineStore('FoodStore', {
           "Frituren",
           "Chickenwings",
           "Taco's"],
-
+          
           //reactiveDataSet
+          allFilteredTitles:[],
           alltitlesFromApi:[],
           reactiveFoodCategorie:[],
           reactiveFoodMenuDetails:[],
@@ -49,6 +51,48 @@ export const useFoodStore = defineStore('FoodStore', {
       },
       //Getters are synchronous functions used to retrieve data from the state
     getters: {
+      // getUserById: (state) => {
+      //   //return (userId) => state.users.find((user) => user.id === userId)
+      // },
+      getFoodMenuFiltered:function(state){
+       const allTitlesGet = [state.reactiveOrderMenus,state.reactiveQuickMenus, state.alltitlesFromApi];
+           return (typeMenu) => {
+            console.log("concat menu",typeMenu, allTitlesGet[typeMenu])
+               //state.allFilteredTitles.concat(allTitlesGet[typeMenu])
+               allTitlesGet[typeMenu].forEach(element => {
+                state.allFilteredTitles.push(element); 
+               }); 
+               return this.allFilteredTitles;
+            }
+      },
+       getFoodMenuFilteredRemoved:function(state){
+        const allTitlesRemove = [state.reactiveOrderMenus,state.reactiveQuickMenus, state.alltitlesFromApi];
+        return (typeMenu) => {
+          console.log("remove Menu",typeMenu)
+          //heeft typeMenu een waarde ? (geen NULL) : anders geef 0
+            if(typeMenu == 0 || typeMenu == 1 || typeMenu == 2 ){
+            
+              allTitlesRemove[typeMenu].forEach(eachitem => {
+               console.log("eachitem",eachitem)
+              state.allFilteredTitles.filter((deleteItem, index)=>{
+                            if(deleteItem ==  eachitem){
+                            let findindex = allTitlesRemove[typeMenu].indexOf(deleteItem);
+                              console.log("delete!:",eachitem,deleteItem,findindex, index); 
+                            state.allFilteredTitles.splice(index, 1);
+                          }
+                          //To remove the duplicates, you use the filter() method to include only 
+                          //elements whose indexes match their indexOf values:
+                          //return removedItem
+                          }) 
+                        })
+                        return this.allFilteredTitles;
+                
+              }else{
+                console.log("null?",typeMenu)
+              return state.allFilteredTitles
+            }
+          }
+       },
       getFoodMenuTitle:function(state){
         for(var key in this.reactiveFoodMenuDetails.meals) {    
            //push to beginning of array

@@ -32,23 +32,30 @@ body{
         form{
             display: flex;
             flex-direction: column;
+            background-color:$gray-dark-4;
+            padding: 1rem;
+            .row{
+                margin-left: 1rem;
+               
+            }
             legend{
                 color: $gray-dark-1;
                 @include make-col(12);
+                text-align: left;
             }
             label{
                 color:$gray-dark-1;
-                padding-left: 1rem;
-
+                padding: 0.5rem;
+                line-height: 0.5rem;
             }
             .form-check{
-                text-align: left;
-               //    display: flex;
-               
+               line-height: 0px;
+               text-align: left;
+               padding: 1rem 1rem;
+              
             @include make-col(12);
                 @media only screen and (min-width: 768px) {
-                   background-color:$gray-dark-4;
-                    @include make-col(3);
+                    @include make-col(4);
                   }
             }
         }
@@ -63,7 +70,6 @@ body{
         }
         .results{
             background-color: $gray-light-5;
-            
             h1{
                 color: blue;
             }  

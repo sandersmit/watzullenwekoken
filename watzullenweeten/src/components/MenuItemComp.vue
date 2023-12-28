@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { reactive,computed,defineProps,ref, watch, onMounted, setup } from "vue";
+import { computed,ref, reactive,defineExpose, watch, onMounted, } from "vue";
 import gsap from 'gsap'
 
 import { useFoodStore } from '../stores/Foodstore';
 import { storeToRefs } from "pinia"; 
-
 
 import { TextPlugin } from "gsap/TextPlugin";
 gsap.registerPlugin(TextPlugin);
@@ -14,18 +13,24 @@ gsap.registerPlugin(TextPlugin);
 //use them with the this.propname - in the whole component. 
 //write them with CAMEL case --and use them in the html with DASH - 
 //To replace option : props{} 
+//Props are Reactive
 const props =  defineProps({
     msg: {
         type: String,
         default: "Edit Detailpage",
     },
-    menuFilterVal:{
-        type: Object
+    menuFilterValProp:{
+        type: Object,
+    },
+    usedOnPage:{
+      type: String,
+      default:"lab"
     }
+
 });
 
 const foodStore = useFoodStore();
-const { reactiveOrderMenus, alltitlesFromApi, allMenuDetailsFromApi } = storeToRefs(useFoodStore()); 
+const { getFoodMenuFiltered, reactiveOrderMenus, alltitlesFromApi, allMenuDetailsFromApi, allFilteredTitles } = storeToRefs(useFoodStore()); 
 
 //To replace the data(){}
 const CTAbutton = ref(null)
@@ -38,12 +43,13 @@ const intervalReducer = 0.5;
 let intervalNumber = ref(500) // 1sec
 const countdown = ref(5)
 const intervalID = ref(0)
-const typeMenu = reactive({
-        param1: [foodStore.reactiveOrderMenus,props.menuFilterVal.param2],
-        param2: [foodStore.reactiveQuickMenus,props.menuFilterVal.param2],
-        param3: [foodStore.getFoodMenuAllTitles,props.menuFilterVal.param2]
-    })
 
+// const reactiveMenuState = reactive({
+//   menuname: props.menuFilterValProp,
+//   status: props.menuFilterValProp, 
+//   id: props.menuFilterValProp
+// })
+  
 //METHODS
 function getRandomInt(max:number) {
   return menuNumberRef.value = Math.floor(Math.random() * max);
@@ -52,7 +58,7 @@ function getRandomInt(max:number) {
 function giveNumber(){
   countdown.value--;
   //new interval number", intervalNumber.value) // 0 
-  return getRandomInt(alltitlesFromApi.value.length);
+  return getRandomInt(allFilteredTitles.value.length);
 }
 
 function start(){
@@ -73,36 +79,75 @@ function togleClassname($event){
  $event.currentTarget.nextElementSibling.classList.toggle("openthis");
 }
 
+const swapMenuTitles = (newTitles) => newTitles.forEach(element => {
+  //alltitlesFromApi.value.length = 0;
+  console.log('swapmenu titles',element)
+  allFilteredTitles.value.push(element)
+});
+
+const defineExposeMethod2 = () => console.log('defineExpose2');
+
+//DEFINE_EXPOSE
+defineExpose({
+        defineExposeMethod2
+       })
+
 //COMPUTED
-const computedMenuTotalMenus = computed(() => alltitlesFromApi.value.length )
+//const computedMenuTotalMenus = computed(() => alltitlesFromApi.value.length )
 
-const computedMenuNumber = computed(  
-    function compMenuNumb(){
-      return giveNumber();
-    }
-  )
 
-const computeReactiveOrderMenu = computed(function(){
-   if ((props.menuFilterVal.param2) && (props.menuFilterVal.param3===0)) {
-    typeMenu.param1[1] === props.menuFilterVal.param2;
-    return typeMenu.param1[0]; 
-   }else{
-    typeMenu.param1[1] === props.menuFilterVal.param2;
-    return typeMenu.param1[0];
-   }
+// const computedMenuNumber = computed(  
+//     function compMenuNumb(){
+//       return giveNumber();
+//     }
+//   )
+
+// const computeReactiveOrderMenu = computed(function(){
+//   return  reactiveMenuStatus.id.param2 ? foodStore.reactiveOrderMenus : foodStore.getFoodMenuAllTitles;
+//   return foodStore.reactiveOrderMenus; 
+// })
+
+
+const computeMenuFilter = computed(function(){
+  //if checkbox prop is true
+  if(props.menuFilterValProp.param2){
+    return foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
+    // foodStore.allFilteredTitles;
+  }else{
+   return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
+  //  return foodStore.allFilteredTitles;
+  }
 })
 
+//const computeOrderMenu= computed(function(){
+  // if(props.menuFilterValProp.param2 && props.menuFilterValProp.param3==0){
+  //   foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
+  //   return foodStore.reactiveOrderMenus;
+  // }else{
+  //  return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
+  //  // return [];
+  // }
+//})
+// const computeQuickMenu= computed(function(){
+//   if(props.menuFilterValProp.param2 && props.menuFilterValProp.param3==1){
+//     foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
+//       return foodStore.reactiveQuickMenus;
+//     }else{
+//   return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
+//     //  return [];
+//     }
+// })
+// const computeApiMenu= computed(function(){
+//   if(props.menuFilterValProp.param2 && props.menuFilterValProp.param3==2){
+//     foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
+//     return foodStore.getFoodMenuAllTitles;
+//   }else{
+//    return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
+//    // return [];
+//     }
+// })
 
 
-
-const computeReactiveOrderMenu3 = computed(function(){
-  // console.log(selectedCookType.value)
-    return foodStore.getFoodMenuAllTitles;
-})
-
-const computeTitles = computed(function(){
-  return foodStore.getFoodMenuTitle;
-})
 
 const showInstructions = computed(function(){
   //showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value
@@ -124,15 +169,6 @@ const showMenuId = computed(function(){
   }
 })
 
-// const foo = computed(() => {
-//       if (foobar.bar) {
-//         return foobar.baz
-//       } else {
-//         return foobar.baf
-//       }
-//     })
-//     const bar = computed(() => false)
-
 const showMenuIngredients = computed(function(){
   for (const [key, value] of Object.entries(foodStore.getAllFoodMenuValues)) {
   //filter in object for sertain key names
@@ -144,9 +180,9 @@ const showMenuIngredients = computed(function(){
     }
 })
 
-const checkToggleStatus = computed(function(){
-  return toggleValue.value;
-})
+// const checkToggleStatus = computed(function(){
+//   return toggleValue.value;
+// })
 
 //WATCHERS
 watch(countdown, (_choose, _prevCount) => {
@@ -160,7 +196,7 @@ watch(countdown, (_choose, _prevCount) => {
 watch(menuNumberRef, (_n) => {
   //watch number
   //replaces text:
-  gsap.to(".highlight", {duration: 1, text: alltitlesFromApi.value[menuNumberRef.value], delay: 1});
+  gsap.to(".highlight", {duration: 1, text: allFilteredTitles.value[menuNumberRef.value], delay: 1});
 })
 
 onMounted(() => {
@@ -170,35 +206,63 @@ onMounted(() => {
 </script>
 
 <template>
-    <header>
-    <h6>Totaal aantal menus: 
+  <header v-if="props.usedOnPage=='lab'">
+    <div>
+      computeMenuFilter?
+    {{ computeMenuFilter }}
+    <hr>
+    </div>
+    <!-- <div v-if="props.menuFilterValProp.param3 == 0">
+    {{ computeOrderMenu }}
+    <hr>
+    </div>
+    <div v-else-if="props.menuFilterValProp.param3 == 1">
+    {{ computeQuickMenu}}
+    <hr>
+    </div>
+    <div v-else-if="props.menuFilterValProp.param3 == 2">
+    {{ computeApiMenu }}
+    <hr>
+    </div> 
+    <div class="py-3" v-else>
+    choose menu type
+    </div>
+    -->
+    
+  </header>
+  <section class="content">
+    <Transition name="fadeTrans"> 
+      <div v-if="!progress" class="qmarkcontainer">
+        <span class="questionmark my-md-4">
+          ?
+        </span>
+      </div>
+    </Transition>
+  </section>
+  <section class="my-4">
+    <button ref="CTAbutton" type="button" enabled class="CTA my-md-2" @click="start()">Wat koken we vandaag? </button>
+  </section>
+  <header>    
+    <h6>Totaal aantal menus?: 
         <!-- <span class="number">
         {{ alltitlesFromApi.length }}
       </span> -->
-      <span class="number" v-if="props.menuFilterVal.param3===0">
-        {{ computeReactiveOrderMenu.length }}
-      </span>
-      <span class="number" v-if="props.menuFilterVal.param3===1">
-        {{ computeReactiveOrderMenu2.length }}  
-      </span>
-      <span class="number" v-if="props.menuFilterVal.param3===2">
-        {{ computeReactiveOrderMenu3.length }}
+      <span class="number">
+        {{ computeMenuFilter.length }}
       </span>
     </h6>
     <div class="headermain">
-      <h1>{{ props.msg }}{{props.menuFilterVal}}
-        <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeReactiveOrderMenu3[menuNumberRef] }}</span></div>
+      <h1 v-if="computeMenuFilter.length > 0">
+        <!-- {{ props.msg }} -->
+        <!-- {{ props.msg }}{{props.menuFilterVal}} -->
+        <div  id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeMenuFilter[menuNumberRef] }}</span></div>
+      </h1>
+      <h1 v-else>
+        <div id="highlight">Selecteer een <span class="highlight">kook type</span></div>
       </h1>
     </div>
     </header>
-  <section class="content">
-    <Transition name="fadeTrans"> 
-        <span  v-if="!progress" class="questionmark my-md-5">?</span>
-    </Transition>
-  </section>
-  <section>
-    <button ref="CTAbutton" type="button" enabled class="CTA my-md-2" @click="start()">Wat koken we vandaag? </button>
-  </section>
+  
   <section class="menuDetails">
     <h4 v-if="showMenuId">Menu: {{ showMenuId }}</h4>
     <h4 v-else> Menu: <i>no id found</i></h4>
@@ -236,9 +300,9 @@ onMounted(() => {
     </svg>
   </a>
     <div v-if="allMenuDetailsFromApi" class="toggleBox" ref="refTarget">
-        <ul class="allMenus" v-for="(food, index) in allMenuDetailsFromApi">
-          <li>index:{{ index }} - ID: {{ food.idMeal }}</li> 
-          <li>Title:{{ food.strMeal }}</li> 
+        <ul class="allMenus">
+          <li v-for="(food, index) in allFilteredTitles" :key="index" >Menu:{{ index }}
+            {{ food}}</li> 
         </ul>
     </div>
     <div v-else>
@@ -387,10 +451,10 @@ header {
 }
 .allMenus{
   display: flex;
-  justify-content: flex-start;
-  flex-direction: row;
-  align-content: flex-start;
-  flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
   li{
     list-style: none;
   }
@@ -406,6 +470,7 @@ button {
   font-weight: 600;
   border: solid 2px #35eb9a;
   font-family: monospace;
+  margin-bottom:2rem;
   &:hover{
     background-color: #242424;
   }
@@ -439,26 +504,65 @@ section {
 .questionmark {
   font-size: 9rem;
   font-weight: 600;
-  width: 10rem;
-    height: 10rem;
+  width: 11rem;
+    height: 11rem;
   position: relative;
   display: block;
   border-radius: 100%;
-  border: solid 8px #155f3e;
-  padding:0px;
+  padding:1rem;
   margin: 0px;
   line-height: 1em;
 }
+
+  .qmarkcontainer{
+    width: 12rem;
+    height: 12rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 100%;
+    justify-content: center;
+    margin:2rem;
+
+        background: linear-gradient(218deg, #202020, #35eb9a);
+        background-size: 400% 400%;
+
+        -webkit-animation: AnimationName 7s ease infinite;
+        -moz-animation: AnimationName 7s ease infinite;
+        -o-animation: AnimationName 7s ease infinite;
+        animation: AnimationName 7s ease infinite;
+    }
+
+    @-webkit-keyframes AnimationName {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+    @-moz-keyframes AnimationName {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+    @-o-keyframes AnimationName {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+    @keyframes AnimationName {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+
 .number {
   border-radius: 100%;
-  padding:0.5rem;
   margin: 0px;
-    line-height: 1em;
-    margin-left: 1rem;
-    min-height: 1rem;
-    min-width: 1rem;
-    display: flex;
-    text-align: center;
-    align-items: center;
+  line-height: 0;
+  margin-left: 2rem;
+  min-height: 2rem;
+  min-width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;    
 }
 </style>

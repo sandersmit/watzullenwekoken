@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import { reactive,computed,defineProps,ref,watch, onMounted } from "vue";
+import { computed,ref,reactive,watch, onMounted } from "vue";
 
 import MenuItemComp from '../components/MenuItemComp.vue';
+import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
 const randomIdMenuRef = ref(0)
 const foodStore = useFoodStore();
-const { reactiveFoodCategorie,reactiveFoodMenuDetails, categoriesFood, reactiveFoodCategorieAllId, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
+const { reactiveFoodCategorie, categoriesFood , reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
+const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken']
+
+const selectedCookType = reactive({
+        param1: "selectedCookType",
+        param2: false,
+        param3: null
+    })
 
 //METHODS
 function getRandomId(max:number) {
@@ -30,6 +38,18 @@ function fetchAllMenuData(){
          foodStore.fetchFoodId(reactiveFoodAllIdsState.value[index])
     }
 }
+
+function emitCheckboxValue(argument) {
+            //console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
+            //,triggerd by the child component to parent component`)
+              selectedCookType.param1 = argument.thisCheckboxName;
+              selectedCookType.param2 = argument.thisSelected;
+              selectedCookType.param3 = argument.thisId;
+              // console.log("selected is:", 
+              // selectedCookType.param1, 
+              // selectedCookType.param2,
+              // selectedCookType.param3) 
+          }
 
 // //await all catergoriesID's
 async function fetchCategorieIds(arg, countArg){
@@ -56,11 +76,21 @@ async function loopcategoriesForIdfunction(){
 
 //COMPUTED
 const computeCategorie = computed(function(){
-  return foodStore.getCategorieFoodMenu;
+    if(reactiveFoodCategorie.value.categories){
+      return foodStore.getCategorieFoodMenu;
+    } 
 })
 
 const computeFetchedids = computed(function(){
     return foodStore.getAllIds 
+})
+
+const computeFetchedIdTitles = computed(function(){
+    return foodStore.getFoodMenuAllTitles;
+})
+
+const computeAlltitlesFromApi = computed(function(){
+    return foodStore.alltitlesFromApi 
 })
 
 //WATCHERS
@@ -70,11 +100,29 @@ watch(computeCategorie, () => {
 watch(computeFetchedids, () => {
 })
 
+watch(computeFetchedIdTitles, () => {
+})
+
+watch(computeAlltitlesFromApi, () => {
+})
+
 onMounted(() => {
  loopcategoriesForIdfunction()
 })
 
 </script>
 <template>
-     <menu-item-comp msg="We koken vandaag..."/>
+   {{ alltitlesFromApi.length }}
+  <form class="m-4" action="">
+  <fieldset>
+    <legend>Selecteer een kook type:</legend>
+      <div class="row">
+         <filter-checkbox-comp ref="filtercheckboxcompRef" v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
+                    :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
+        </filter-checkbox-comp>
+      </div>
+    </fieldset>
+  </form>
+     <menu-item-comp used-on-page="main" msg="We koken vandaag:" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType">
+     </menu-item-comp>
 </template>
