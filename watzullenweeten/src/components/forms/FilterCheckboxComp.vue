@@ -1,6 +1,6 @@
 <template>
     <div class="form-check">
-        <label :for="`${checkIdProp}`" class="form-check-label">{{checkboxNameProp}}</label>
+        <label :for="`${checkIdProp}`" class="form-check-label extraclassname">{{checkboxNameProp}}</label>
         
         <!-- <input type="checkbox" class="form-check-input"
         :id="`${checkIdProp}`"
