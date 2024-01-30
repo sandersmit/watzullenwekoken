@@ -8,16 +8,17 @@ import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
 const randomIdMenuRef = ref(0)
+const count = ref(0)
 const foodStore = useFoodStore();
-const { reactiveFoodCategorie, categoriesFood , reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
-const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken']
+const { reactiveFoodCategorie, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
+const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken','Big data (all)', 'Big data > 100']
 
 const selectedCookType = reactive({
         param1: "selectedCookType",
         param2: false,
         param3: null
     })
-
+  
 //METHODS
 function getRandomId(max:number) {
   randomIdMenuRef.value = Math.floor(Math.random() * max);
@@ -32,66 +33,70 @@ function fetchRandomMenuID(){
   foodStore.fetchRandomFoodId(targetRandomMenuID())
 }
 
-function fetchAllMenuData(){
-  //fetchAllMenuData
-    for (let index = 0; index < 14; index++) {
-         foodStore.fetchFoodId(reactiveFoodAllIdsState.value[index])
-    }
-}
-
 function emitCheckboxValue(argument) {
             //console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
             //,triggerd by the child component to parent component`)
               selectedCookType.param1 = argument.thisCheckboxName;
               selectedCookType.param2 = argument.thisSelected;
               selectedCookType.param3 = argument.thisId;
-              // console.log("selected is:", 
-              // selectedCookType.param1, 
-              // selectedCookType.param2,
-              // selectedCookType.param3) 
+            foodStore.showAllAction(argument.thisId,  argument.thisSelected )
           }
-
-// //await all catergoriesID's
-async function fetchCategorieIds(arg, countArg){
-    const response = await foodStore.fetchCategorieIds(arg)
-   if(countArg == categoriesFood.value.length-1) {
-     if (response) {
-        fetchAllMenuData()
-        fetchRandomMenuID()
-        }
-    }
+        
+function fetchAllMenuData(idArg){
+    foodStore.fetchFoodId(idArg)
 }
-// //await all catergories
-async function loopcategoriesForIdfunction(){
-        const response = await foodStore.fetchFoodCategorie();
-        //when its done, do a foreach on the response - also awaiting 
-        //got all ",response.categories.length,"categorie id's to loop trough"
 
-        response.categories.forEach(newfunction);
-        function  newfunction(item:any, index:any){
-        //loopcategoriesForIdfunction
-           fetchCategorieIds(item.strCategory, index)
-         }
+// //await all catergoriesID's - then fetch all menu id's 
+async function fetchCategorieIds(arg, countArg){
+  //get all id's of each categorie
+  const response = await foodStore.fetchCategorieIds(arg)
+  count.value++
+  //console.log("get all id's of each categorie",response.meals, count.value, countArg)
+  response.meals.forEach((element, index) => {
+  //   //details van eerste 30 gerechten // anders crashed de server door error too many requests at once.. totaal 302 menu's
+    if (index < 2) {
+     // console.log("count", count.value ,element.idMeal)
+      fetchAllMenuData(element.idMeal)
+     // console.log("max 2 gerechten per categorie", 'index:',index, 'element:', element);
+    }
+   });
+}
+
+// //await all catergories - > then fetch all categorie id's 
+async function loopcategoriesForIdfunction(){ 
+          const response = await foodStore.fetchFoodCategorie();
+           //when its done, do a foreach on the response - also awaiting 
+          //got all ",response.categories.length,"categorie id's to loop trough"
+          //console.log(response)
+          //fetchRandomMenuID()
+          response.categories.forEach(newfunction);
+            function newfunction(item, index){
+            //loopcategoriesForIdfunction
+            // count.value++
+             console.log("loopcategoriesForIdfunction", count.value)
+              fetchCategorieIds(item.strCategory, index)
+            }
     }
 
 //COMPUTED
 const computeCategorie = computed(function(){
     if(reactiveFoodCategorie.value.categories){
+      //console.log(foodStore.getCategorieFoodMenu)
       return foodStore.getCategorieFoodMenu;
-    } 
+    } else{
+      return null
+    }
 })
 
 const computeFetchedids = computed(function(){
-    return foodStore.getAllIds 
-})
-
-const computeFetchedIdTitles = computed(function(){
-    return foodStore.getFoodMenuAllTitles;
+    return foodStore.getAllIds
 })
 
 const computeAlltitlesFromApi = computed(function(){
     return foodStore.alltitlesFromApi 
 })
+
+
 
 //WATCHERS
 watch(computeCategorie, () => {
@@ -100,19 +105,19 @@ watch(computeCategorie, () => {
 watch(computeFetchedids, () => {
 })
 
-watch(computeFetchedIdTitles, () => {
-})
-
 watch(computeAlltitlesFromApi, () => {
 })
 
+
+
 onMounted(() => {
+//resetting the id's when page refresh
+reactiveFoodAllIdsState.value.length = 0
  loopcategoriesForIdfunction()
 })
 
 </script>
 <template>
-   {{ alltitlesFromApi.length }}
   <form class="m-4" action="">
   <fieldset>
     <legend>Selecteer een kook type:</legend>
@@ -123,6 +128,6 @@ onMounted(() => {
       </div>
     </fieldset>
   </form>
-     <menu-item-comp used-on-page="main" msg="We koken vandaag:" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType">
+     <menu-item-comp used-on-page="main" btnmsg="We koken vandaag?" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType">
      </menu-item-comp>
 </template>

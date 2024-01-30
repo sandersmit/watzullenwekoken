@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed,ref, reactive,defineExpose, watch, onMounted, } from "vue";
+import { computed,ref ,defineExpose, watch, onMounted, onUpdated, nextTick} from "vue";
 import gsap from 'gsap'
 
 import { useFoodStore } from '../stores/Foodstore';
@@ -7,20 +7,25 @@ import { storeToRefs } from "pinia";
 
 import { TextPlugin } from "gsap/TextPlugin";
 gsap.registerPlugin(TextPlugin);
+//import type CTAbuttonType from "../types/alltypes"
+
+
 
 // defineProps<{ msg: string }>()
 //Make Vue aware of the props
 //use them with the this.propname - in the whole component. 
 //write them with CAMEL case --and use them in the html with DASH - 
-//To replace option : props{} 
+//To replace option - props:{} - use - defineProps({}) 
 //Props are Reactive
 const props =  defineProps({
-    msg: {
+    btnmsg: {
         type: String,
         default: "Edit Detailpage",
     },
     menuFilterValProp:{
         type: Object,
+        //set required for TS
+        required: false
     },
     usedOnPage:{
       type: String,
@@ -30,19 +35,20 @@ const props =  defineProps({
 });
 
 const foodStore = useFoodStore();
-const { getFoodMenuFiltered, reactiveOrderMenus, alltitlesFromApi, allMenuDetailsFromApi, allFilteredTitles } = storeToRefs(useFoodStore()); 
+const {allMenuDetailsFromApi} = storeToRefs(useFoodStore()); 
 
 //To replace the data(){}
-const CTAbutton = ref(null)
-//const refTarget = ref(null)
+const CTAbutton = ref();
 const progress = ref(false)
-const toggleValue = ref(false);
 const menuNumberRef = ref(0);
-const totalApiMenuTitles = ref([]);
-const intervalReducer = 0.5;
 let intervalNumber = ref(500) // 1sec
 const countdown = ref(5)
 const intervalID = ref(0)
+const titlesResults = ref([])
+const titlesResultsLenght = ref(0)
+
+
+
 
 // const reactiveMenuState = reactive({
 //   menuname: props.menuFilterValProp,
@@ -58,32 +64,38 @@ function getRandomInt(max:number) {
 function giveNumber(){
   countdown.value--;
   //new interval number", intervalNumber.value) // 0 
-  return getRandomInt(allFilteredTitles.value.length);
+  console.log(titlesResults.value.flat().length)
+  return getRandomInt(titlesResults.value.flat().length);
 }
 
 function start(){
-  CTAbutton.value.disabled=true;
   progress.value=true;
   intervalID.value = setInterval(giveNumber, intervalNumber.value, "Parameter 1", "Parameter 2");
 }
 
 function reset(){
   countdown.value = 5; 
-  CTAbutton.value.disabled=false;
   progress.value = false;
 }
 
-function togleClassname($event){  
-  //toggle reactive ref - toggleValue.value = !toggleValue.value;
- $event.currentTarget.classList.toggle("open");
- $event.currentTarget.nextElementSibling.classList.toggle("openthis");
+function toggleClassname(event:Event){  
+ const target = event.currentTarget as HTMLAnchorElement;
+ target.classList.toggle("open");
+ target.nextElementSibling?.classList.toggle("openthis");
 }
 
-const swapMenuTitles = (newTitles) => newTitles.forEach(element => {
-  //alltitlesFromApi.value.length = 0;
-  console.log('swapmenu titles',element)
-  allFilteredTitles.value.push(element)
-});
+
+function buttonStatus(){
+  if ( titlesResults.value.length !== 0){ 
+      CTAbutton.value.disabled = false
+      console.log("props.menuFilterValProp.param3",props.menuFilterValProp.param3,CTAbutton.value)
+    }
+  else{
+      console.log("CTAbutton.value.disabled = true")
+      console.log("props.menuFilterValProp.param3",props.menuFilterValProp.param3,CTAbutton.value)
+      CTAbutton.value.disabled = true
+    }
+}
 
 const defineExposeMethod2 = () => console.log('defineExpose2');
 
@@ -94,7 +106,6 @@ defineExpose({
 
 //COMPUTED
 //const computedMenuTotalMenus = computed(() => alltitlesFromApi.value.length )
-
 
 // const computedMenuNumber = computed(  
 //     function compMenuNumb(){
@@ -107,60 +118,39 @@ defineExpose({
 //   return foodStore.reactiveOrderMenus; 
 // })
 
-
 const computeMenuFilter = computed(function(){
-  //if checkbox prop is true
-  if(props.menuFilterValProp.param2){
-    return foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
-    // foodStore.allFilteredTitles;
-  }else{
-   return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
-  //  return foodStore.allFilteredTitles;
-  }
+    //reset array to empty
+    titlesResults.value = [];
+   
+    foodStore.getFoodMenuFiltered.forEach((element, index) => {
+     titlesResults.value.push(element.menu)
+    });
+    return titlesResults.value.flat();
 })
 
-//const computeOrderMenu= computed(function(){
-  // if(props.menuFilterValProp.param2 && props.menuFilterValProp.param3==0){
-  //   foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
-  //   return foodStore.reactiveOrderMenus;
-  // }else{
-  //  return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
-  //  // return [];
-  // }
-//})
-// const computeQuickMenu= computed(function(){
-//   if(props.menuFilterValProp.param2 && props.menuFilterValProp.param3==1){
-//     foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
-//       return foodStore.reactiveQuickMenus;
-//     }else{
-//   return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
-//     //  return [];
-//     }
-// })
-// const computeApiMenu= computed(function(){
-//   if(props.menuFilterValProp.param2 && props.menuFilterValProp.param3==2){
-//     foodStore.getFoodMenuFiltered(props.menuFilterValProp.param3);
-//     return foodStore.getFoodMenuAllTitles;
-//   }else{
-//    return foodStore.getFoodMenuFilteredRemoved(props.menuFilterValProp.param3);
-//    // return [];
-//     }
+
+
+
+
+// const showInstructions = computed(function(){
+//   //showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value
+//  //NOT VALID ACCORING ESLINT..
+//   // for (let _i in foodStore.getAllFoodMenuValues) {
+//   //  return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
+//   // }
+//   //WELL VALID ACCORING ESLINT..
+//   if (foodStore.getAllFoodMenuValues) {
+//     console.log("foodStore.getAllFoodMenuValues")
+//     return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions;
+//     // let instructions: Array<string> = foodStore.getAllFoodMenuValues[menuNumberRef.value];
+//     // return instructions
+//   } else {
+//     return foodStore.getAllFoodMenuValues[menuNumberRef.value]
+//   }
 // })
 
-
-
-const showInstructions = computed(function(){
-  //showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value
- //NOT VALID ACCORING ESLINT..
-  for (let _i in foodStore.getAllFoodMenuValues) {
-   return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
-  }
-  //WELL VALID ACCORING ESLINT..
-  // if (foodStore.getAllFoodMenuValues > 0) {
-  //   return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
-  // } else {
-  //   return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
-  // }
+const computeAllFoodMenuTitles = computed(function(){
+    return foodStore.getAllFoodMenuTitles;
 })
 
 const showMenuId = computed(function(){
@@ -180,37 +170,51 @@ const showMenuIngredients = computed(function(){
     }
 })
 
-// const checkToggleStatus = computed(function(){
-//   return toggleValue.value;
-// })
 
 //WATCHERS
-watch(countdown, (_choose, _prevCount) => {
-  if ( countdown.value == 0){
+watch(titlesResults, () => {
+  //NextTick() is a vue special method 
+  // that executes callback before mounted hook or 
+  // computed functions , direct after the new data updates have reached DOM.
+ nextTick(() => {
+  console.log("dom loaded")
+    buttonStatus()
+  })
+})
+watch(computeAllFoodMenuTitles, () => {
+})
+
+watch(countdown, () => {
+  console.log("countdown")
+  if ( countdown.value == 0){ 
        //watch - triggered clearInterval", countdown.value
         clearInterval(intervalID.value );
         reset();   
     }
 })
 
-watch(menuNumberRef, (_n) => {
+watch(menuNumberRef, () => {
   //watch number
   //replaces text:
-  gsap.to(".highlight", {duration: 1, text: allFilteredTitles.value[menuNumberRef.value], delay: 1});
+  gsap.to(".highlight", {duration: 1, text: titlesResults.value.flat()[menuNumberRef.value], delay: 1});
 })
 
 onMounted(() => {
   CTAbutton.value.className = 'true'
-  CTAbutton.value.enabled= 'true'
-})  
+  CTAbutton.value.disabled = true
+})
+
 </script>
 
 <template>
   <header v-if="props.usedOnPage=='lab'">
     <div>
       computeMenuFilter?
-    {{ computeMenuFilter }}
+    <!-- {{ computeMenuFilter }} -->
     <hr>
+    <!-- {{ computeAllFoodMenuTitles }} -->
+    <hr>
+    <!-- {{ foodStore.getAllFoodMenuValues[0] }} -->
     </div>
     <!-- <div v-if="props.menuFilterValProp.param3 == 0">
     {{ computeOrderMenu }}
@@ -228,8 +232,11 @@ onMounted(() => {
     choose menu type
     </div>
     -->
-    
+   
   </header>
+  <section class="my-4">
+    <button ref="CTAbutton" type="button" disabled class="CTA my-md-2" @click="start()">{{ props.btnmsg }}</button>
+  </section>
   <section class="content">
     <Transition name="fadeTrans"> 
       <div v-if="!progress" class="qmarkcontainer">
@@ -239,27 +246,21 @@ onMounted(() => {
       </div>
     </Transition>
   </section>
-  <section class="my-4">
-    <button ref="CTAbutton" type="button" enabled class="CTA my-md-2" @click="start()">Wat koken we vandaag? </button>
-  </section>
   <header>    
     <h6>Totaal aantal menus?: 
-        <!-- <span class="number">
-        {{ alltitlesFromApi.length }}
-      </span> -->
-      <span class="number">
+      <span class="number">  
         {{ computeMenuFilter.length }}
       </span>
     </h6>
     <div class="headermain">
+      <Transition name="fadeTrans">
       <h1 v-if="computeMenuFilter.length > 0">
-        <!-- {{ props.msg }} -->
-        <!-- {{ props.msg }}{{props.menuFilterVal}} -->
-        <div  id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeMenuFilter[menuNumberRef] }}</span></div>
+        <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeMenuFilter[menuNumberRef] }}</span></div>
       </h1>
       <h1 v-else>
         <div id="highlight">Selecteer een <span class="highlight">kook type</span></div>
       </h1>
+    </Transition>
     </div>
     </header>
   
@@ -267,16 +268,16 @@ onMounted(() => {
     <h4 v-if="showMenuId">Menu: {{ showMenuId }}</h4>
     <h4 v-else> Menu: <i>no id found</i></h4>
     <h3>Instructions</h3>
-    <div v-if="showInstructions">
+    <!-- <div v-if="showInstructions">
       <p>
         {{ showInstructions}}
       </p>
     </div>
     <div v-else>
       no instructions found
-    </div>
+    </div> -->
   <div v-if="showMenuIngredients">
-    <a @click="togleClassname($event)" class="accord py-md-2" >
+    <a @click="toggleClassname($event)" class="accord py-md-2" >
     <h3>Ingredienten ({{showMenuIngredients.length}})</h3>     
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
         <title>plus circle</title>
@@ -291,7 +292,7 @@ onMounted(() => {
   <div v-else>
     no Ingredients found
   </div>
-  <a @click="togleClassname($event)" class="accord py-md-2" >
+  <a @click="toggleClassname($event)" class="accord py-md-2" >
     <h3>All menus </h3>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
         <title>plus circle</title>
@@ -299,9 +300,10 @@ onMounted(() => {
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
     </svg>
   </a>
+ 
     <div v-if="allMenuDetailsFromApi" class="toggleBox" ref="refTarget">
         <ul class="allMenus">
-          <li v-for="(food, index) in allFilteredTitles" :key="index" >Menu:{{ index }}
+          <li v-for="(food, index) in titlesResults.flat()" :key="index" >Menu:{{ index }}
             {{ food}}</li> 
         </ul>
     </div>
@@ -468,12 +470,9 @@ button {
   margin: 0 auto;
   align-self: end;
   font-weight: 600;
-  border: solid 2px #35eb9a;
+ 
   font-family: monospace;
-  margin-bottom:2rem;
-  &:hover{
-    background-color: #242424;
-  }
+  margin-top: 2rem;
 }
 
 section {

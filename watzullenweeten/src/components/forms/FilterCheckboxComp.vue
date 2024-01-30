@@ -16,15 +16,32 @@
         :value="`${checkboxValueProp}`" 
         @click="checkboxValuePropEmit"
         ref="checkboxEl"
-        >                                                             
+        >
+        <span v-if="computeTotalIndicators[checkIdProp]">{{ computeTotalIndicators[checkIdProp].length }}</span> 
+        <span v-else>0</span>                                                            
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { ref } from "vue";
+
+import { useFoodStore } from '../../stores/FoodStore'
+
+
 
 export default{
     //using composition api with setup() as am option from the option API
     //end using composition api with setup()
+    setup() {
+        const foodStore = useFoodStore();
+        const amounts = ref([])
+
+    // expose to template and other options API hooks
+    return {
+        foodStore,
+        amounts
+    }
+  },
     //Make Vue aware of the props
     //use them with the this.propname - in the whole component. 
     //write them with CAMEL case --and use them in the html with DASH - 
@@ -62,13 +79,9 @@ export default{
         //     console.log(`toggle ${this.bedrijfsnaamProp} test6 ${this.bedrijfsUrlArgumentProp}`);
         // },
         setCheckbox(){
-           if(this.checkIdProp==0){
-            console.log(this.$refs.checkboxEl,this.checkIdProp)
+           //if(this.checkIdProp==0){
             this.$refs.checkboxEl.checked;
-           }
-           
-           //this.checkIdProp==0 ? this.$refs.checkboxEl.checked : !this.$refs.checkboxEl.checked;
-           //this.checkboxEl.checked = !this.checkboxEl.checked;
+          // }
         },
         checkboxValuePropEmit:function(){  
            // console.log(this.checkboxEl)
@@ -78,8 +91,6 @@ export default{
             // passing 'custom event name' + argument
             this.selected =! this.selected;
             console.log("this.selected?:"+ this.selected)
-            //console.log("checkboxValuePropEmit:"+ this.checkboxEl[0])
-           // console.log("checkboxValuePropEmit:"+ this.checkboxNameProp)
            const emitCheckboxProps = {
             'thisSelected':this.selected,
              'thisCheckboxName': this.checkboxNameProp,
@@ -100,20 +111,23 @@ export default{
         // },
     },
        //YOU only want to change one value when one dependency changes.NOT all..
-    //Not change all because of one change in one of the existing data depandancy..
-    // so only to check and return or display allready-known & 
-    // -calculated values (from methods:) to the user-interface
+        //Not change all because of one change in one of the existing data depandancy..
+        // so only to check and return or display allready-known & 
+        // -calculated values (from methods:) to the user-interface
     computed:{
-        computedClass() {
-      const valueclassname = paginationIndexProp=0 ? 'active':''
-      //let className = 'active';
-      // More complicated logic to determine what
-      // class should be applied
-      return valueclassname;
-        },
-        // returnChecked() {
-        //     return this.selected
-        // }   
+            computeTotalIndicators() {  
+                return this.foodStore.allTitlesGet
+            },
+            computedClass() {
+                const valueclassname = paginationIndexProp=0 ? 'active':''
+                //let className = 'active';
+                // More complicated logic to determine what
+                // class should be applied
+                return valueclassname;
+                },
+            // returnChecked() {
+            //     return this.selected
+            // }   
     },
     //YOU repeat the names from //data properies  //for example 'counter'
     // - in the 'watch:' object - as functions() - to watch changes between them. 

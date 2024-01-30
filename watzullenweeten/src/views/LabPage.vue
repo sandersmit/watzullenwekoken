@@ -68,7 +68,7 @@ async function fetchCategorieIds(arg, countArg){
      if (response) {
         //"got allId's.. start pick on random menu"
         fetchAllMenuData()
-        fetchRandomMenuID()
+        //fetchRandomMenuID()
         }
     }
 }
@@ -108,6 +108,10 @@ const showInstructions = computed(function(){
   return foodStore.getFoodMenuValue.meals[0].strInstructions;
   }
 })
+
+// const computeAllData = computed(function(){ 
+//   return foodStore.getAllFoodMenuValues
+// })
 
 onMounted(() => {
  loopcategoriesForIdfunction()
@@ -171,4 +175,18 @@ onMounted(() => {
                    <li>{{ food.strIngredient6}}</li> 
                 </ul>
     </div>
+    <section class="results testing">
+    <div>
+      <!-- <ul class="allMenus">
+          <li v-for="(datail, index) in computeAllData" :key="index" >
+            MenuDetails:{{ index }}{{ datail.strInstructions}}</li> 
+        </ul> -->
+    </div>
+    <hr>
+    all loaded titles:{{ alltitlesFromApi.length }} 
+    <hr>
+    aantal id's:{{ computeFetchedids}}
+    <hr>
+    id's?:{{ reactiveFoodAllIdsState[0] }}
+  </section>
 </template>
