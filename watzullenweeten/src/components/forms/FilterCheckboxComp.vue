@@ -92,7 +92,7 @@ export default{
             this.selected =! this.selected;
             console.log("this.selected?:"+ this.selected)
            const emitCheckboxProps = {
-            'thisSelected':this.selected,
+             'thisSelected':this.selected,
              'thisCheckboxName': this.checkboxNameProp,
              'thisId':this.checkIdProp
            }

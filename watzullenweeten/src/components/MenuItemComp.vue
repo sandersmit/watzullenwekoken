@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed,ref ,defineExpose, watch, onMounted, onUpdated, nextTick} from "vue";
+import { computed,ref, reactive ,defineExpose, watch, onMounted, onUpdated, nextTick} from "vue";
 import gsap from 'gsap'
 
 import { useFoodStore } from '../stores/Foodstore';
@@ -25,7 +25,12 @@ const props =  defineProps({
     menuFilterValProp:{
         type: Object,
         //set required for TS
-        required: false
+        required: true
+    },
+    filtersTotal:{
+        type: Number,
+        //set required for TS
+        required: true
     },
     usedOnPage:{
       type: String,
@@ -45,17 +50,10 @@ let intervalNumber = ref(500) // 1sec
 const countdown = ref(5)
 const intervalID = ref(0)
 const titlesResults = ref([])
-const titlesResultsLenght = ref(0)
+const totalFilters = ref(props.filtersTotal)
+const currentSelectedFilters = ref([])
 
 
-
-
-// const reactiveMenuState = reactive({
-//   menuname: props.menuFilterValProp,
-//   status: props.menuFilterValProp, 
-//   id: props.menuFilterValProp
-// })
-  
 //METHODS
 function getRandomInt(max:number) {
   return menuNumberRef.value = Math.floor(Math.random() * max);
@@ -63,8 +61,6 @@ function getRandomInt(max:number) {
 
 function giveNumber(){
   countdown.value--;
-  //new interval number", intervalNumber.value) // 0 
-  console.log(titlesResults.value.flat().length)
   return getRandomInt(titlesResults.value.flat().length);
 }
 
@@ -78,6 +74,16 @@ function reset(){
   progress.value = false;
 }
 
+function initFilters(){
+  for (let index = 0; index < totalFilters.value; index++) {
+    currentSelectedFilters.value.push(false)
+  }
+  console.log("setFilters()", currentSelectedFilters.value)
+  
+
+}
+
+
 function toggleClassname(event:Event){  
  const target = event.currentTarget as HTMLAnchorElement;
  target.classList.toggle("open");
@@ -86,7 +92,8 @@ function toggleClassname(event:Event){
 
 
 function buttonStatus(){
-  if ( titlesResults.value.length !== 0){ 
+  if ( titlesResults.value.length !== 0){
+      console.log(computeMenuTitle.value)
       CTAbutton.value.disabled = false
       console.log("props.menuFilterValProp.param3",props.menuFilterValProp.param3,CTAbutton.value)
     }
@@ -105,23 +112,9 @@ defineExpose({
        })
 
 //COMPUTED
-//const computedMenuTotalMenus = computed(() => alltitlesFromApi.value.length )
-
-// const computedMenuNumber = computed(  
-//     function compMenuNumb(){
-//       return giveNumber();
-//     }
-//   )
-
-// const computeReactiveOrderMenu = computed(function(){
-//   return  reactiveMenuStatus.id.param2 ? foodStore.reactiveOrderMenus : foodStore.getFoodMenuAllTitles;
-//   return foodStore.reactiveOrderMenus; 
-// })
-
-const computeMenuFilter = computed(function(){
+const computeMenuTitle = computed(function(){
     //reset array to empty
     titlesResults.value = [];
-   
     foodStore.getFoodMenuFiltered.forEach((element, index) => {
      titlesResults.value.push(element.menu)
     });
@@ -129,44 +122,65 @@ const computeMenuFilter = computed(function(){
 })
 
 
+const computeMenuFilter = computed(function(){
+  currentSelectedFilters.value[props.menuFilterValProp.param3] =  props.menuFilterValProp.param2;
+ // console.log(currentSelectedFilters.value)
+    return currentSelectedFilters.value
+})
 
 
 
-// const showInstructions = computed(function(){
-//   //showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value
-//  //NOT VALID ACCORING ESLINT..
-//   // for (let _i in foodStore.getAllFoodMenuValues) {
-//   //  return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions
-//   // }
-//   //WELL VALID ACCORING ESLINT..
-//   if (foodStore.getAllFoodMenuValues) {
-//     console.log("foodStore.getAllFoodMenuValues")
-//     return foodStore.getAllFoodMenuValues[menuNumberRef.value].strInstructions;
-//     // let instructions: Array<string> = foodStore.getAllFoodMenuValues[menuNumberRef.value];
-//     // return instructions
-//   } else {
-//     return foodStore.getAllFoodMenuValues[menuNumberRef.value]
-//   }
-// })
+const showInstructions = computed(function(){
+ // console.log(currentSelectedFilters.value)
+  //showInstructions..number:",menuNumberRef.value, allMenuDetailsFromApi.value
+ //NOT VALID ACCORING ESLINT..
+  // for (let _i in foodStore.getAllApiFoodMenuValues) {
+  //  return foodStore.getAllApiFoodMenuValues[menuNumberRef.value].strInstructions
+  // }
+  //WELL VALID ACCORING ESLINT..
+  if (foodStore.getAllApiFoodMenuValues) {
+    //return foodStore.getAllApiFoodMenuValues[menuNumberRef.value].strInstructions;
+    // console.log("menuNumberRef.value",menuNumberRef.value)
+    // console.log("foodStore.getAllApiFoodMenuValues[menuNumberRef.value]",foodStore.getAllApiFoodMenuValues)
+    return foodStore.getAllApiFoodMenuValues[menuNumberRef.value]
+    // let instructions: Array<string> = foodStore.getAllApiFoodMenuValues[menuNumberRef.value];
+    // return instructions
+  } else {
+    console.log("no values [placeholder?]")
+    return []
+  }
+})
 
 const computeAllFoodMenuTitles = computed(function(){
     return foodStore.getAllFoodMenuTitles;
 })
 
 const showMenuId = computed(function(){
-  for (let _i in foodStore.getAllFoodMenuValues) {
-   return foodStore.getAllFoodMenuValues[menuNumberRef.value].idMeal
+  if(computeMenuFilter.value[2]){
+    return foodStore.getAllApiFoodMenuValues[menuNumberRef.value]
+  }else{
+    console.log("no values [placeholder?]")
+    return null
   }
 })
 
 const showMenuIngredients = computed(function(){
-  for (const [key, value] of Object.entries(foodStore.getAllFoodMenuValues)) {
-  //filter in object for sertain key names
-  let arrayingredientValueKeys = Object.fromEntries(Object.entries(foodStore.getAllFoodMenuValues[menuNumberRef.value]).filter(([key]) => key.includes('strIngredient')));
-  //return the values from those keynames
-  let arrayingredientValues = Object.values(arrayingredientValueKeys);  
-  //remove all empty values from array
-  return arrayingredientValues.filter(Boolean);
+  let arrayingredientValues;
+    if(foodStore.getAllApiFoodMenuValues && computeMenuFilter.value[2]){
+      for (const [key, value] of Object.entries(foodStore.getAllApiFoodMenuValues)) {
+    //filter in object for sertain key names
+    console.log("foodStore.getAllApiFoodMenuValues.length",foodStore.getAllApiFoodMenuValues.length)
+    let arrayingredientValueKeys = Object.fromEntries(Object.entries(foodStore.getAllApiFoodMenuValues[menuNumberRef.value]).filter(([key]) => key.includes('strIngredient')));
+    //return the values from those keynames
+    arrayingredientValues = Object.values(arrayingredientValueKeys);  
+    //remove all empty values from array
+    arrayingredientValues.filter(Boolean);
+      }
+      return arrayingredientValues
+    }
+  else{
+    console.log("no values [placeholder?]")
+    return null
     }
 })
 
@@ -177,7 +191,7 @@ watch(titlesResults, () => {
   // that executes callback before mounted hook or 
   // computed functions , direct after the new data updates have reached DOM.
  nextTick(() => {
-  console.log("dom loaded")
+  // console.log("dom loaded")
     buttonStatus()
   })
 })
@@ -185,7 +199,6 @@ watch(computeAllFoodMenuTitles, () => {
 })
 
 watch(countdown, () => {
-  console.log("countdown")
   if ( countdown.value == 0){ 
        //watch - triggered clearInterval", countdown.value
         clearInterval(intervalID.value );
@@ -202,6 +215,8 @@ watch(menuNumberRef, () => {
 onMounted(() => {
   CTAbutton.value.className = 'true'
   CTAbutton.value.disabled = true
+  initFilters();
+
 })
 
 </script>
@@ -209,12 +224,12 @@ onMounted(() => {
 <template>
   <header v-if="props.usedOnPage=='lab'">
     <div>
-      computeMenuFilter?
-    <!-- {{ computeMenuFilter }} -->
+      computeMenuTitle?
+    <!-- {{ computeMenuTitle }} -->
     <hr>
     <!-- {{ computeAllFoodMenuTitles }} -->
     <hr>
-    <!-- {{ foodStore.getAllFoodMenuValues[0] }} -->
+    <!-- {{ foodStore.getAllApiFoodMenuValues[0] }} -->
     </div>
     <!-- <div v-if="props.menuFilterValProp.param3 == 0">
     {{ computeOrderMenu }}
@@ -232,7 +247,6 @@ onMounted(() => {
     choose menu type
     </div>
     -->
-   
   </header>
   <section class="my-4">
     <button ref="CTAbutton" type="button" disabled class="CTA my-md-2" @click="start()">{{ props.btnmsg }}</button>
@@ -249,33 +263,43 @@ onMounted(() => {
   <header>    
     <h6>Totaal aantal menus?: 
       <span class="number">  
-        {{ computeMenuFilter.length }}
+        {{ computeMenuTitle.length }}
       </span>
     </h6>
     <div class="headermain">
       <Transition name="fadeTrans">
-      <h1 v-if="computeMenuFilter.length > 0">
-        <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeMenuFilter[menuNumberRef] }}</span></div>
+      <h1 v-if="computeMenuTitle.length > 0">
+        <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeMenuTitle[menuNumberRef] }}</span></div>
       </h1>
       <h1 v-else>
         <div id="highlight">Selecteer een <span class="highlight">kook type</span></div>
       </h1>
-    </Transition>
+      </Transition>
     </div>
     </header>
-  
   <section class="menuDetails">
-    <h4 v-if="showMenuId">Menu: {{ showMenuId }}</h4>
-    <h4 v-else> Menu: <i>no id found</i></h4>
-    <h3>Instructions</h3>
-    <!-- <div v-if="showInstructions">
-      <p>
-        {{ showInstructions}}
-      </p>
+    <h4 v-if="showMenuId!=null">Menu: {{ showMenuId.idMeal }}</h4>
+    <h4 v-else> No id found</h4>
+    <div >
+    <div v-if="computeMenuFilter[2]">
+      <a @click="toggleClassname($event)" class="accord py-md-2" >
+      <h3>Instructions</h3>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
+          <title>plus circle</title>
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
+      </a> 
+      <div class="toggleBox">
+        <p>
+          {{ showInstructions}}
+        </p>
+      </div>
     </div>
     <div v-else>
-      no instructions found
-    </div> -->
+      <h3>No instructions found</h3>
+    </div>
+  </div>
   <div v-if="showMenuIngredients">
     <a @click="toggleClassname($event)" class="accord py-md-2" >
     <h3>Ingredienten ({{showMenuIngredients.length}})</h3>     
@@ -290,25 +314,26 @@ onMounted(() => {
         </ul>
   </div>
   <div v-else>
-    no Ingredients found
+    <h3>No Ingredients found</h3>
   </div>
-  <a @click="toggleClassname($event)" class="accord py-md-2" >
-    <h3>All menus </h3>
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
-        <title>plus circle</title>
-        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-    </svg>
-  </a>
- 
-    <div v-if="allMenuDetailsFromApi" class="toggleBox" ref="refTarget">
-        <ul class="allMenus">
-          <li v-for="(food, index) in titlesResults.flat()" :key="index" >Menu:{{ index }}
-            {{ food}}</li> 
-        </ul>
+    <div v-if="computeMenuFilter[0] || computeMenuFilter[1] || computeMenuFilter[2]" >
+      <a @click="toggleClassname($event)" class="accord py-md-2" >
+        <h3>All menus ({{titlesResults.flat().length}})</h3>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
+            <title>plus circle</title>
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
+      </a>
+      <div class="toggleBox" ref="refTarget">
+          <ul class="allMenus">
+            <li v-for="(food, index) in titlesResults.flat()" :key="index" >Menu:{{ index }}
+              {{ food}}</li> 
+          </ul>
+      </div>
     </div>
     <div v-else>
-      no data found
+      <h3>No menus found</h3>
     </div>
   </section>
 </template>
