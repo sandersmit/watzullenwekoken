@@ -45,7 +45,7 @@ export const useFoodStore = defineStore('FoodStore', {
          reactiveFoodCategorie:[],
          reactiveFoodMenuDetails:[],
          titlesFoodMenu:[],
-         reactiveAllMenuDetails:[],
+         reactiveAllApiMenuDetails:[],
          allMenuDetailsFromApi:[],
          categoriesFood:[],
          allFoodMenuData:[],
@@ -74,20 +74,22 @@ export const useFoodStore = defineStore('FoodStore', {
          return state.titlesFoodMenu;
       },
       getAllFoodMenuTitles:function(state){
-        for(var key in this.reactiveAllMenuDetails.meals) {
+        for(var key in this.reactiveAllApiMenuDetails.meals) {
            //push to beginning of array
-           state.alltitlesFromApi.push(this.reactiveAllMenuDetails.meals[key].strMeal)
+           state.alltitlesFromApi.push(this.reactiveAllApiMenuDetails.meals[key].strMeal)
          }
          return state.alltitlesFromApi;
       },
       getFoodMenuValue:function(state){
         return state.reactiveFoodMenuDetails;
       },
-      getAllFoodMenuValues:function(state){
-        for(var key in this.reactiveAllMenuDetails.meals) {
+      getAllApiFoodMenuValues:function(state){
+        for(var key in this.reactiveAllApiMenuDetails.meals) {
           //push to beginning of array
-          state.allMenuDetailsFromApi.push(this.reactiveAllMenuDetails.meals[key])
+          state.allMenuDetailsFromApi.push(this.reactiveAllApiMenuDetails.meals[key])
         }
+        //concat all menu detials
+
         return state.allMenuDetailsFromApi;
       },
       getCategorieFoodMenu:function(state){
@@ -171,12 +173,12 @@ export const useFoodStore = defineStore('FoodStore', {
           //this.reactiveFoodMenuDetails = response;
         },
         async fetchFoodId(idArg){
-          return this.reactiveAllMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idArg}`
+          return this.reactiveAllApiMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idArg}`
             ).then(function (response) {
             //   console.log(response);
               return response.json();            
             });
-         //this.reactiveAllMenuDetails = response;
+         //this.reactiveAllApiMenuDetails = response;
         }
     }
   })

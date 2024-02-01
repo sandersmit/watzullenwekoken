@@ -7,6 +7,8 @@ import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
+
+
 const randomIdMenuRef = ref(0)
 const count = ref(0)
 const foodStore = useFoodStore();
@@ -128,6 +130,6 @@ reactiveFoodAllIdsState.value.length = 0
       </div>
     </fieldset>
   </form>
-     <menu-item-comp used-on-page="main" btnmsg="We koken vandaag?" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType">
+     <menu-item-comp used-on-page="main" btnmsg="We koken vandaag?" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType" :filters-total="cookingTypes.length">
      </menu-item-comp>
 </template>
