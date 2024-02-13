@@ -54,7 +54,7 @@ async function fetchCategorieIds(arg, countArg){
   //console.log("get all id's of each categorie",response.meals, count.value, countArg)
   response.meals.forEach((element, index) => {
   //  console.log("index",index, element)
-    //offline 34.. chicken categorie..
+  //offline 34.. chicken categorie..
   // details van eerste 2 gerechten per categorie // dus 27 totaal
   // anders crashed de server door error too many requests at once.. totaal 302 menu's
     if (index < 1) {

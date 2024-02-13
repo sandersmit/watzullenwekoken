@@ -9,7 +9,6 @@ import { TextPlugin } from "gsap/TextPlugin";
 gsap.registerPlugin(TextPlugin);
 //import type CTAbuttonType from "../types/alltypes"
 
-
 // defineProps<{ msg: string }>()
 //Make Vue aware of the props
 //use them with the this.propname - in the whole component. 
@@ -85,7 +84,6 @@ function initFilters(){
   for (let index = 0; index < totalFilters.value; index++) {
     currentSelectedFilters.value.push(false)
   }
-  console.log("setFilters()", currentSelectedFilters.value)
 }
 
 
@@ -98,13 +96,9 @@ function toggleClassname(event:Event){
 
 function buttonStatus(){
   if ( titlesResults.value.length !== 0){
-      console.log(computeTotalMenuTitles.value)
       CTAbutton.value.disabled = false
-      console.log("props.menuFilterValProp.param3",props.menuFilterValProp.param3,CTAbutton.value)
     }
   else{
-      console.log("CTAbutton.value.disabled = true")
-      console.log("props.menuFilterValProp.param3",props.menuFilterValProp.param3,CTAbutton.value)
       CTAbutton.value.disabled = true
     }
 }
@@ -128,7 +122,6 @@ const computeTotalMenuTitles = computed(function(){
 
 const computeSelectedTitle = computed(function(){
    selectedTitle.value = computeTotalMenuTitles.value[menuNumberRef.value]
-   console.log("selectedTitle.value",selectedTitle.value, menuNumberRef.value)
    return selectedTitle.value
   })
 
@@ -136,11 +129,9 @@ const computeCheckIfApiTitle = computed(function(){
 let thisItem = alltitlesFromApi.value.find(item => item == computeSelectedTitle.value)
   if (thisItem != undefined) {
     showApiData.value = true
-    console.log("thisItem: ",thisItem,showApiData.value )
     return showApiData.value
   } else {
     showApiData.value = false
-    console.log("thisItem: ",thisItem,showApiData.value )
     return showApiData.value
   }
 })
@@ -160,11 +151,10 @@ const computeAllFoodMenuValues = computed(function(){
 
 const showInstructions = computed(function(){
   if (computeCheckIfApiTitle.value) {
-    console.log(computeSelectedTitle.value)
     let objectValue = foodStore.getAllApiFoodMenuValues.find(item => item.strMeal == computeSelectedTitle.value)
-    return [objectValue.idMeal,'-', objectValue.strMeal,':', objectValue.strInstructions]
+    return [objectValue.idMeal, objectValue.strMeal, objectValue.strInstructions]
   }else {
-    console.log("no instruction values [placeholder?]")
+    //console.log("no instruction values [placeholder?]")
     return null
   }
 })
@@ -180,20 +170,17 @@ const showMenuIngredients = computed(function () {
           //item returns boolean
           item = key.includes('strIngredient');
           //if true && empty string => dont return empty values
-          
           if (item && val != '') {
-            console.log(val)
             return item
           }
         }))
       }
     }
     ingredientsTotal.value = Object.keys(arrayingredientValues).length
-    console.log("Object.keys(arrayingredientValues).length",ingredientsTotal.value)
     return arrayingredientValues
   }
   else {
-    console.log("no ingredients values [placeholder?]")
+    //console.log("no ingredients values [placeholder?]")
     return null
   }
 })
@@ -203,19 +190,17 @@ const showMenuId = computed(function(){
   if (computeCheckIfApiTitle.value) {
     //console.log("showMenuId: menuNumberRef.value",menuNumberRef.value, foodStore.getAllApiFoodMenuValues)
     let findId = foodStore.getAllApiFoodMenuValues.find(item => item.strMeal == computeSelectedTitle.value)
-   
       return findId.idMeal
   }else{
-    console.log("no id values [placeholder?]")
+   // console.log("no id values [placeholder?]")
     return null
   }
 })
 //reactiveFoodCategorieAllId
 const computeAllCategorieData = computed(function () {
   let arrayValues = [];
-  //   if (computeCheckIfApiTitle.value) {
   for (const [key, value] of Object.entries(reactiveFoodCategorieAllId.value)) {
-    //     //filter in object for sertain key names
+    //filter in object for sertain key names
     console.log("key", key, "value", value)
     arrayValues.push(value)
   }
@@ -337,7 +322,9 @@ onMounted(() => {
       </a> 
       <div class="toggleBox">
         <p>
-          {{ showInstructions}}
+          <span class="tag">{{ showInstructions[0]}}</span>
+          <span class="tag">{{ showInstructions[1]}}</span>
+          {{ showInstructions[2]}}
         </p>
       </div>
     </div>
