@@ -7,12 +7,10 @@ import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
-
-
 const randomIdMenuRef = ref(0)
 const count = ref(0)
 const foodStore = useFoodStore();
-const { reactiveFoodCategorie, reactiveFoodAllIdsState, alltitlesFromApi } = storeToRefs(useFoodStore()); 
+const { reactiveFoodCategorie, reactiveFoodAllIdsState} = storeToRefs(useFoodStore()); 
 const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken','Big data (all)', 'Big data > 100']
 
 const selectedCookType = reactive({
@@ -22,18 +20,18 @@ const selectedCookType = reactive({
     })
   
 //METHODS
-function getRandomId(max:number) {
-  randomIdMenuRef.value = Math.floor(Math.random() * max);
-  return randomIdMenuRef.value
-}
+// function getRandomId(max:number) {
+//   randomIdMenuRef.value = Math.floor(Math.random() * max);
+//   return randomIdMenuRef.value
+// }
 
-function targetRandomMenuID(){
-  return foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)]
-}
+// function targetRandomMenuID(){
+//   return foodStore.getAllIds[getRandomId(foodStore.getAllIds.length)]
+// }
 
-function fetchRandomMenuID(){
-  foodStore.fetchRandomFoodId(targetRandomMenuID())
-}
+// function fetchRandomMenuID(){
+//   foodStore.fetchRandomFoodId(targetRandomMenuID())
+// }
 
 function emitCheckboxValue(argument) {
             //console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
@@ -55,11 +53,14 @@ async function fetchCategorieIds(arg, countArg){
   count.value++
   //console.log("get all id's of each categorie",response.meals, count.value, countArg)
   response.meals.forEach((element, index) => {
-  //   //details van eerste 30 gerechten // anders crashed de server door error too many requests at once.. totaal 302 menu's
-    if (index < 2) {
-     // console.log("count", count.value ,element.idMeal)
-      fetchAllMenuData(element.idMeal)
-     // console.log("max 2 gerechten per categorie", 'index:',index, 'element:', element);
+  //  console.log("index",index, element)
+    //offline 34.. chicken categorie..
+  // details van eerste 2 gerechten per categorie // dus 27 totaal
+  // anders crashed de server door error too many requests at once.. totaal 302 menu's
+    if (index < 1) {
+    //   console.log("count", count.value ,element.idMeal)
+    fetchAllMenuData(element.idMeal)
+    //  console.log("max 2 gerechten per categorie", 'index:',index, 'element:', element);
     }
    });
 }
@@ -75,8 +76,12 @@ async function loopcategoriesForIdfunction(){
             function newfunction(item, index){
             //loopcategoriesForIdfunction
             // count.value++
-             console.log("loopcategoriesForIdfunction", count.value)
+           //  console.log("loopcategoriesForIdfunction", count.value)
+             if (index < 1) {
+             // console.log("fetchCategorieIds")
               fetchCategorieIds(item.strCategory, index)
+             } 
+             
             }
     }
 
@@ -97,8 +102,6 @@ const computeFetchedids = computed(function(){
 const computeAlltitlesFromApi = computed(function(){
     return foodStore.alltitlesFromApi 
 })
-
-
 
 //WATCHERS
 watch(computeCategorie, () => {
@@ -121,13 +124,21 @@ reactiveFoodAllIdsState.value.length = 0
 </script>
 <template>
   <form class="m-4" action="">
-  <fieldset>
-    <legend>Selecteer een kook type:</legend>
-      <div class="row">
-         <filter-checkbox-comp ref="filtercheckboxcompRef" v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
-                    :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
-        </filter-checkbox-comp>
-      </div>
+    <!-- <fieldset>
+      <legend>Selecteer een categorie eten:</legend>
+          <div class="row">
+            <filter-checkbox-comp v-for="(typeitem, index) in computeCategorie" :key="index" :checkbox-name-prop="typeitem"
+                        :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
+            </filter-checkbox-comp>
+          </div>
+    </fieldset> -->
+    <fieldset>
+      <legend>Selecteer een kook type:</legend>
+        <div class="row">
+          <filter-checkbox-comp ref="filtercheckboxcompRef" v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
+                      :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
+          </filter-checkbox-comp>
+        </div>
     </fieldset>
   </form>
      <menu-item-comp used-on-page="main" btnmsg="We koken vandaag?" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType" :filters-total="cookingTypes.length">

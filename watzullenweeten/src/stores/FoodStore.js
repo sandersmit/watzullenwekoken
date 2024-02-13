@@ -66,17 +66,19 @@ export const useFoodStore = defineStore('FoodStore', {
         // state.allTitlesGet = state.reactiveOrderMenus.concat(state.reactiveQuickMenus, state.alltitlesFromApi, state.reactiveBigData);
         return state.allFilteredTitles
       },
-      getFoodMenuTitle:function(state){
-        for(var key in this.reactiveFoodMenuDetails.meals) {    
-           //push to beginning of array
-           state.titlesFoodMenu.unshift(this.reactiveFoodMenuDetails.meals[key].strMeal)
-         }
-         return state.titlesFoodMenu;
-      },
-      getAllFoodMenuTitles:function(state){
-        for(var key in this.reactiveAllApiMenuDetails.meals) {
-           //push to beginning of array
+      // getFoodMenuTitle:function(state){
+      //   for(var key in this.reactiveFoodMenuDetails.meals) {    
+      //      //push to beginning of array
+      //      state.titlesFoodMenu.unshift(this.reactiveFoodMenuDetails.meals[key].strMeal)
+      //    }
+      //    return state.titlesFoodMenu;
+      // },
+      getAllApiFoodMenuTitles:function(state){
+        console.log("getAllApiFoodMenuTitles")
+        //for(var key in this.reactiveAllApiMenuDetails.meals) {
+          for(var key in this.reactiveAllApiMenuDetails.meals) {
            state.alltitlesFromApi.push(this.reactiveAllApiMenuDetails.meals[key].strMeal)
+           //state.alltitlesFromApi.push(this.reactiveAllApiMenuDetails[key].strMeal)
          }
          return state.alltitlesFromApi;
       },
@@ -84,12 +86,12 @@ export const useFoodStore = defineStore('FoodStore', {
         return state.reactiveFoodMenuDetails;
       },
       getAllApiFoodMenuValues:function(state){
+        console.log("getAllApiFoodMenuValues")
         for(var key in this.reactiveAllApiMenuDetails.meals) {
-          //push to beginning of array
+          //console.log("this.reactiveAllApiMenuDetails.meals[key]",this.reactiveAllApiMenuDetails.meals[key]) 
           state.allMenuDetailsFromApi.push(this.reactiveAllApiMenuDetails.meals[key])
         }
         //concat all menu detials
-
         return state.allMenuDetailsFromApi;
       },
       getCategorieFoodMenu:function(state){
@@ -102,7 +104,9 @@ export const useFoodStore = defineStore('FoodStore', {
       },
       getAllIds:function(state){
         //getAllIds..
+        console.log("getAllIds from store..")
         for(var key in this.reactiveFoodCategorieAllId.meals) {
+          //console.log(this.reactiveFoodCategorieAllId.meals[key].idMeal)
           state.reactiveFoodAllIdsState.push(this.reactiveFoodCategorieAllId.meals[key].idMeal)
            }
        return state.reactiveFoodAllIdsState; 
@@ -146,7 +150,8 @@ export const useFoodStore = defineStore('FoodStore', {
       },
       async fetchFoodCategorie(){
         //fetching fetchFoodCategorie
-        return this.reactiveFoodCategorie = await fetch(`https://www.themealdb.com/api/json/v1/1/categories.php`
+        //return this.reactiveFoodCategorie = await fetch(`https://www.themealdb.com/api/json/v1/1/categories.php`
+        return this.reactiveFoodCategorie = await fetch(`http://localhost:5173/vue/data/reactiveFoodCategorieNames.json`
           ).then(function (response) {
             return response.json();            
           }).catch(error => {
@@ -157,23 +162,26 @@ export const useFoodStore = defineStore('FoodStore', {
             //  return response;
        },
         async fetchCategorieIds(foodcatArg){
-          return this.reactiveFoodCategorieAllId = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${foodcatArg}`
+         // return this.reactiveFoodCategorieAllId = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${foodcatArg}`
+         return this.reactiveFoodCategorieAllId = await fetch(`http://localhost:5173/vue/data/reactiveFoodCategorieIds.json`
             ).then(function (response) {
               return response.json();            
             });
           //  this.reactiveFoodCategorieAllId = response;
           //  return response;
         },
-        async fetchRandomFoodId(randomArg){
-          //fetching fetchRandomFoodId..", with randomArg
-          this.reactiveFoodMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${randomArg}`
-            ).then(function (response) {
-              return response.json();            
-            });
-          //this.reactiveFoodMenuDetails = response;
-        },
+        // async fetchRandomFoodId(randomArg){
+        //   //fetching fetchRandomFoodId..", with randomArg
+        //  this.reactiveFoodMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${randomArg}`
+        //     ).then(function (response) {
+        //       return response.json();            
+        //     });
+        //   //this.reactiveFoodMenuDetails = response;
+        // },
         async fetchFoodId(idArg){
-          return this.reactiveAllApiMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idArg}`
+          console.log("fetchFoodId - from store")
+          //return this.reactiveAllApiMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idArg}`
+          return this.reactiveAllApiMenuDetails = await fetch(`http://localhost:5173/vue/data/reactiveAllApiMenuDetails.json`
             ).then(function (response) {
             //   console.log(response);
               return response.json();            
