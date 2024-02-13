@@ -144,7 +144,7 @@ onMounted(() => {
       <button @click="menuitemcompRef.defineExposeMethod2">defineExpose method - MenuItemComp</button>
       <button @click="foodStore.fetchFoodCategorie()">fetch categorie</button>
       <button @click="fetchRandomMenuID()">pickMenu</button> pickedMenu is {{randomIdMenuRef}}
-                <h1>computeTitle:{{ computeTitles[0] }}</h1>
+               
                 <h5 v-if="computeCategorie">total Categories: {{computeCategorie.length}}</h5>
                 <h5 v-else  > no categories yet</h5>
                 <h2>{{ computeCategorie }}</h2>

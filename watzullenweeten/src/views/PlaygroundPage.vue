@@ -79,7 +79,6 @@ watch(computeCategorie, () => {
       <button @click="foodStore.fetchFoodCategorie()">fetch categorie</button>
       <button @click="getComputedIds()">get all id's {{ computeFetchedids.length }}</button>
       <button @click="fetchRandomMenuID()">pickMenu</button> pickedMenu is {{randomIdMenuRef}}
-                <h1>computeTitle:{{ computeTitle[0] }}</h1>
                 <h5 v-if="computeCategorie">total Categories: {{computeCategorie.length}}</h5>
                 <h5 v-else  > no categories yet</h5>
                 <h2>{{ computeCategorie }}</h2>
