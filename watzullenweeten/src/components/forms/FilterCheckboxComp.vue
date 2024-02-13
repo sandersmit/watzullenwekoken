@@ -1,15 +1,6 @@
 <template>
     <div class="form-check">
         <label :for="`${checkIdProp}`" class="form-check-label extraclassname">{{checkboxNameProp}}</label>
-        
-        <!-- <input type="checkbox" class="form-check-input"
-        :id="`${checkIdProp}`"
-        :class="checkIdProp==0 ?'active':''" 
-        :value="`${checkboxValueProp}`" 
-        @click="checkboxValuePropEmit"
-        v-model="selected"
-        ref="checkboxEl"
-        >  -->
         <input type="checkbox" class="form-check-input"
         :id="`${checkIdProp}`"
         :class="checkIdProp==0 ?'active':''" 
@@ -24,10 +15,7 @@
 
 <script lang="ts">
 import { ref } from "vue";
-
 import { useFoodStore } from '../../stores/FoodStore'
-
-
 
 export default{
     //using composition api with setup() as am option from the option API
@@ -90,7 +78,6 @@ export default{
             //emitting custom event 'emit-custom-event' => to parent comp
             // passing 'custom event name' + argument
             this.selected =! this.selected;
-            console.log("this.selected?:"+ this.selected)
            const emitCheckboxProps = {
              'thisSelected':this.selected,
              'thisCheckboxName': this.checkboxNameProp,
