@@ -71,6 +71,11 @@
         place-items: center;
         min-width: 320px;
         min-height: 100vh;
+        h1,h2,h3,h4,h5,h6{
+         &:focus-visible{
+          border: solid 1px;
+         } 
+        }
       h1 {
         line-height: 1.1;
       }
@@ -86,12 +91,16 @@
     }
   }
 
+
 .tag{
     list-style: none;
     background: $gray-dark-4;
     border-radius: $border-radius;
     padding: 0.5rem 1rem;
     margin: 0.5rem 0.25rem;
+    margin-left: 0px;
+    font-size: 1rem;
+    font-weight: 800;
 }
 
 
@@ -107,10 +116,26 @@
   }
  }
 
-
+.titleContainer{
+  h6 {
+    padding: 2rem;
+    font-size: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    
+    justify-content: center;
+    @include media-breakpoint-up(sm) { 
+      justify-content: flex-end;
+     }  
+    align-items: center;
+  }
+}
   a{
     &.accord{
-      //padding: 1rem;
+      padding: 1.5rem;
+      @include media-breakpoint-up(sm) { 
+       padding: 1rem;
+      }  
       cursor: pointer;
       &:hover{
         opacity: 0.7;
@@ -130,18 +155,31 @@
       }
     }
   }
-
-
+.btnContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
 
   button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    border: 1px solid $green-light;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        border: 1px solid $green-light;
+        font-size: 1em;
+        width: 300px;
+        padding: 1rem;
+        margin: 0 auto;
+        align-self: end;
+        font-weight: 600;
+        font-family: monospace;
+        background: linear-gradient(218deg, $gray-dark-5, #000);
+        background-size: 400% 400%;
+        -webkit-animation: AnimationGradient 3s ease infinite;
+        -moz-animation: AnimationGradient 3s ease infinite;
+        -o-animation: AnimationGradient 3s ease infinite;
+        animation: AnimationGradient 3s ease infinite;
     &:hover{
       border: 1px solid $green-lighter;
       background-color: $gray-dark-5;
@@ -150,6 +188,7 @@
     transition: border-color 0.25s;
     &:disabled{
       border: 1px solid $gray-dark-3;
+      animation: none;
       &:hover{
         border: 1px solid $gray-dark-3;
         background-color: #1a1a1a;
@@ -157,9 +196,7 @@
       }
     }
   }
-  // button:hover {
-  //   border-color: #646cff;
-  // }
+
   button:focus,
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
@@ -176,9 +213,32 @@
   
   #app {
     width: 100%;
-    //padding: 2rem;
     text-align: center;
     .menuDetails{
+      padding: 2rem;
+      background-color: #155f3e;
+      border-radius: 0;
+      color: #cac5c5;
+      @include media-breakpoint-up(sm) { 
+        border-radius: 1rem;
+       } 
+       .idNumber{
+        display: none;
+        
+        font-size: 2rem;
+       
+        padding-right: 2rem;
+        padding-bottom: 2rem;
+        
+        display: flex;
+        flex-wrap: wrap;
+        justify-content:center;
+        align-items: center;
+        @include media-breakpoint-up(sm) { 
+          padding-right: 2rem;
+          justify-content: flex-end;
+         }  
+      }
       max-width: 768px;
       margin: 2rem auto;
       border: solid 1px #155f3e;
@@ -189,11 +249,166 @@
           border: none;
         }
       }
+
+      h3{
+        padding: 1rem;
+      }
     }
   }
 
-  
-  
+  .qmarkcontainer{
+    .qmarkincontainer{
+        background-color: #202020;
+        position: absolute;
+        width: 8rem;
+        height: 8rem;
+        @include media-breakpoint-up(sm) { 
+          width: 11rem;
+          height: 11rem;
+        }   
+        border-radius: 100%;
+          }
+        .questionmark { 
+            font-weight: 600;
+            width: 8rem;
+            height: 8rem;
+            @include media-breakpoint-up(sm) { 
+              width: 11rem;
+              height: 11rem;
+            }   
+            position: relative;
+            display: block;
+            border-radius: 100%;
+            padding:1rem;
+            margin: 0px;
+            line-height: 1em;
+            &.sec{
+              color: #000;
+            }
+          }
+      
+          font-size: 6rem;
+          width: 9rem;
+          height: 9rem;
+          @include media-breakpoint-up(sm) { 
+            font-size: 9rem;
+            width: 12rem;
+            height: 12rem;
+          }   
+        position: relative;
+        display: flex;
+        align-items: center;
+        border-radius: 100%;
+        justify-content: center;
+        margin:2rem auto;
+        background: radial-gradient(#000, #1b4834);
+        background-size: 300% 300%;
+        animation: AnimationGradient 10s cubic-bezier(0.23,-1.98, 1, 1) infinite;
+        -webkit-animation: AnimationGradient 10s cubic-bezier(0.23,-1.98, 1, 1) infinite;
+        -moz-animation: AnimationGradient 10s cubic-bezier(0.23,-1.98, 1, 1) infinite;
+        -o-animation: AnimationGradient 10s cubic-bezier(0.23,-1.98, 1, 1) infinite;
+    }
+
+    @-webkit-keyframes AnimationGradient {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+    @-moz-keyframes AnimationGradient {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+    @-o-keyframes AnimationGradient {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+    @keyframes AnimationGradient {
+        0%{background-position:91% 0%}
+        50%{background-position:10% 100%}
+        100%{background-position:91% 0%}
+    }
+//////
+/// ///switch style
+
+.form-check{
+  &.check{
+    padding: 0px;
+    display: flex
+    
+  }
+ 
+    .switch {
+      position: relative;
+      display: block;
+      width: 60px;
+      height: 30px;
+      &:focus{
+        border:1px solid #86b7fe;
+        outline-offset: 1px;
+        outline: 0;
+      }
+    }
+   
+      span{
+          &.label{
+            display: block;
+            min-width: 100px;
+            font-size: 1rem;
+            align-self: center;
+            text-align: right;
+          }
+        }
+      }
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: $gray-dark-3;
+      border-radius: 4px;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+      border-radius: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: $green;
+    border-radius: 5px;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px $green;
+    }
+    
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+
   // @media (prefers-color-scheme: light) {
   //   :root {
   //     color: #213547;

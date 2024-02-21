@@ -1,6 +1,6 @@
 //Import custom SCSS
 body{
-    background-color: $gray-dark-5;
+   
         article{
             background-color: $gray-dark-5;
         }
@@ -40,12 +40,10 @@ body{
                
             }
             legend{
-                color: $gray-dark-1;
                 @include make-col(12);
                 text-align: left;
             }
             label{
-                color:$gray-dark-1;
                 padding: 0.5rem;
                 line-height: 0.5rem;
             }

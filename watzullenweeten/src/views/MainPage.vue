@@ -18,6 +18,8 @@ const selectedCookType = reactive({
         param2: false,
         param3: null
     })
+
+ 
   
 //METHODS
 // function getRandomId(max:number) {
@@ -123,7 +125,7 @@ reactiveFoodAllIdsState.value.length = 0
 
 </script>
 <template>
-  <form class="m-4" action="">
+  <form class="my-1 m-4" action="">
     <!-- <fieldset>
       <legend>Selecteer een categorie eten:</legend>
           <div class="row">
@@ -141,6 +143,6 @@ reactiveFoodAllIdsState.value.length = 0
         </div>
     </fieldset>
   </form>
-     <menu-item-comp used-on-page="main" btnmsg="We koken vandaag?" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType" :filters-total="cookingTypes.length">
+     <menu-item-comp used-on-page="main" btnmsg="Wat koken we vandaag" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType" :filters-total="cookingTypes.length">
      </menu-item-comp>
 </template>
