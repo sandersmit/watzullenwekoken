@@ -57,8 +57,7 @@ const currentSelectedFilters = ref([])
 const selectedTitle = ref("etenswaren")
 const showApiData = ref(false)
 const ingredientsTotal = ref(0)
-
-
+const step1 = ref();
 
 //METHODS
 function getRandomInt(max:number) {
@@ -73,6 +72,8 @@ function giveNumber(){
 function start(){
   progress.value=true;
   intervalID.value = setInterval(giveNumber, intervalNumber.value, "Parameter 1", "Parameter 2");
+  step1.value.scrollIntoView()
+  step1.value.classList.add('active')
 }
 
 function reset(){
@@ -91,17 +92,20 @@ function toggleClassname(event:Event){
  const target = event.currentTarget as HTMLAnchorElement;
  target.classList.toggle("open");
  target.nextElementSibling?.classList.toggle("openthis");
+//  event.preventDefault();
+//  return false;
 }
 
 
-function buttonStatus(){
-  if ( titlesResults.value.length !== 0){
-      CTAbutton.value.disabled = false
-    }
-  else{
-      CTAbutton.value.disabled = true
-    }
-}
+// function buttonStatus(){
+//   if ( titlesResults.value.length != 0){
+//       CTAbutton.value.disabled = false
+//     }
+//   else{
+//     console.log("disabled")
+//       CTAbutton.value.disabled = true
+//     }
+// }
 
 const defineExposeMethod2 = () => console.log('defineExpose2');
 
@@ -213,10 +217,11 @@ watch(titlesResults, () => {
   //NextTick() is a vue special method 
   // that executes callback before mounted hook or 
   // computed functions , direct after the new data updates have reached DOM.
- nextTick(() => {
-  // console.log("dom loaded")
-    buttonStatus()
-  })
+//  nextTick(() => {
+//   // console.log("dom loaded")
+//    // buttonStatus()
+//   })
+
 })
 
 // watch(computeCheckIfApiTitle, () => {
@@ -252,88 +257,85 @@ onMounted(() => {
 </script>
 
 <template>
-  <header v-if="props.usedOnPage=='lab'">
-    <div>
-      computeTotalMenuTitles?
-    <!-- {{ computeTotalMenuTitles }} -->
-    <hr>
-    <!-- {{ computeAllFoodMenuTitles }} -->
-    <hr>
-    <!-- {{ foodStore.getAllApiFoodMenuValues[0] }} -->
-    </div>
-    <!-- <div v-if="props.menuFilterValProp.param3 == 0">
-    {{ computeOrderMenu }}
-    <hr>
-    </div>
-    <div v-else-if="props.menuFilterValProp.param3 == 1">
-    {{ computeQuickMenu}}
-    <hr>
-    </div>
-    <div v-else-if="props.menuFilterValProp.param3 == 2">
-    {{ computeApiMenu }}
-    <hr>
-    </div> 
-    <div class="py-3" v-else>
-    choose menu type
-    </div>
-    -->
-  </header>
-  <section class="my-4">
-    <button ref="CTAbutton" type="button" disabled class="CTA my-md-2" @click="start()">{{ props.btnmsg }}</button>
-  </section>
-  <section class="content">
-    <Transition name="fadeTrans"> 
-      <div v-if="!progress" class="qmarkcontainer">
-        <span class="questionmark my-md-4">
-          ?
-        </span>
+  <section class="content pt-1 pt-md-5" ref="step1">
+    <Transition mode="out-in">
+      <div v-if="!progress && computeTotalMenuTitles.length > 0" class="btnContainer my-4">
+        <button ref="CTAbutton" type="button" title="Click to choose a random menu" name="Choose menu button" class="CTA" @click="start()">{{ props.btnmsg }}</button> 
+      </div>
+      <div v-else-if="computeTotalMenuTitles.length == 0" class="btnContainer my-4" >
+        <button ref="CTAbutton" disabled type="button" title="Click to choose a random menu" name="Choose menu button" class="CTA" @click="start()">no selection</button>
+      </div>
+      <div v-else-if="progress && computeTotalMenuTitles.length > 0" class="btnContainer my-4">
+           <h2 id="highlight" class="highlight">{{ computeSelectedTitle }}</h2>
       </div>
     </Transition>
+   
+        <div class="qmarkcontainer my-2 my-sm-4">
+          <span class="qmarkincontainer">
+
+          </span>
+          <Transition name="fadeTrans" mode="out-in">
+            <div class="questionmark my-md-4" aria-hidden="true" v-if="!progress">
+              ?
+            </div>
+            <div class="questionmark sec my-md-4" aria-hidden="true" v-else>
+             ?
+            </div>
+          </Transition>
+         </div>
+    
   </section>
-  <header> 
-    <h6>Totaal aantal menus?: 
+  <section class="titleContainer"> 
+    <h6>Totaal aantal menus 
       <span class="number">  
         {{ computeTotalMenuTitles.length }}
       </span>
     </h6>
     <div class="headermain">
-      <!-- <Transition name="fadeTrans"> -->
+      <Transition name="fadeTrans" mode="out-in">
       <h1 v-if="computeTotalMenuTitles.length > 0">
-        <div id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeSelectedTitle }}</span></div>
+        We koken vandaag: 
+        <Transition name="fadeTrans" mode="out-in">
+        <div v-if="!progress" id="highlight">menu {{ menuNumberRef }}:  <span class="highlight">{{ computeSelectedTitle }}</span>
+        </div>
+        <div v-else>
+          <span class="highlight2">waiting..</span>
+        </div>
+      </Transition>
       </h1>
       <h1 v-else>
         <div id="highlight">Selecteer een <span class="highlight">kook type</span></div>
       </h1>
-      <!-- </Transition> -->
+      </Transition>
     </div>
-    </header>
+  </section>
   <section class="menuDetails">
-    <h4 v-if="showMenuId!=null">Menu: {{ showMenuId }}</h4>
-    <h4 v-else> No id found</h4>
-    <div >
-    <div v-if="showInstructions != null">
-      <a @click="toggleClassname($event)" class="accord py-md-2" >
-      <h3>Instructions</h3>
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
-          <title>plus circle</title>
-          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-        </svg>
-      </a> 
-      <div class="toggleBox">
-        <p>
-          <span class="tag">{{ showInstructions[0]}}</span>
-          <span class="tag">{{ showInstructions[1]}}</span>
-          {{ showInstructions[2]}}
-        </p>
+    <div class="idNumber" v-if="showMenuId!=null">Menu: {{ showMenuId }}</div>
+    <div class="idNumber" v-else> No id found</div>
+      <div>
+        <div id="instructions" v-if="showInstructions != null">
+          <a href="#" alt="Instructions" @click.prevent="toggleClassname($event)" class="accord py-md-2"  >
+          <h3>Instructions</h3>
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
+              <title>plus circle</title>
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+          </a> 
+          <div class="toggleBox">
+            <p>
+              <span class="tag">{{ showInstructions[0]}}</span>
+              <span class="tag">{{ showInstructions[1]}}</span>
+              {{ showInstructions[2]}}
+            </p>
+          </div>
       </div>
-    </div>
     <div v-else>
       <h3>No instructions found</h3>
     </div>
   </div>
   <div v-if="showMenuIngredients != null">
-    <a @click="toggleClassname($event)" class="accord py-md-2" >
+    <a href="#" alt="ingredients" @click.prevent="toggleClassname($event)" class="accord py-md-2" >
     <h3>Ingredienten ({{ingredientsTotal}})</h3>     
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
         <title>plus circle</title>
@@ -346,10 +348,10 @@ onMounted(() => {
         </ul>
   </div>
   <div v-else>
-    <h3>No Ingredients found</h3>
+    <h3>No Ingredients found</h3>     
   </div>
     <div v-if="computeMenuFilter[0] || computeMenuFilter[1] || computeMenuFilter[2]" >
-      <a @click="toggleClassname($event)" class="accord py-md-2" >
+      <a href="#" alt="All menus" @click.prevent="toggleClassname($event)" class="accord py-md-2" >
         <h3>All menus ({{titlesResults.flat().length}})</h3>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e5e5e5" class="bi bi-plus-circle" viewBox="0 0 16 16">
             <title>plus circle</title>
@@ -408,74 +410,65 @@ onMounted(() => {
 
 .fadeTrans-leave-to {
   transform: translateY(20px);
-  opacity: 0;
+  opacity: 0.01;
 }
-
 
 //default vue class v-
 .v-enter-active,
 .v-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  opacity: 1;
 }
 
 .v-enter-from {
-  transform: translateY(-20px);
+  //transform: translateY(-20%);
   opacity: 0;
 }
 
 .v-enter-to {
-  transform: translateY(0px);
+  //transform: translateY(0%);
   opacity: 1;
 }
-
 .v-leave-to {
-  transform: translateY(20px);
+  //transform: translateY(-20%);
   opacity: 0;
 }
 
 
-header {
-  // margin-left: -2rem;
-  // margin-right: -2rem;
-  min-height: 350px;
+.titleContainer{
+  height: 55vh;
   background-color: #155f3e;
   display: flex;
   flex-direction: column;
+  flex-wrap: nowrap;
   
   .headermain{
     display: flex;
     align-items: center;
     flex-basis: auto;
-    display: flex;
     justify-content: center;
     flex: 1;
   }
 
   h1 {
+    
     padding: 0rem 1rem;
     word-break:break-word;
+    
   }
 
   h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-  }
-
-  h6 {
-    text-align: right;
-    padding-right: 2rem;
-    padding-top: 2rem;
-    font-size: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
+    &.highlight{
+      font-size: 0.5rem;
+    }
   }
 }
 .toggleBox, .ingredients.toggleBox{
-  transform: translateY(-20px);
-  opacity: 0;
-  height: 0;
+    transform: translateY(-20px);
+    opacity: 0;
+    height: 0;
     overflow: hidden;
     transition: all 0.3s ease;
   &.openthis{
@@ -485,9 +478,12 @@ header {
     overflow:inherit;
     margin-bottom:1rem;
   }
-}
-.highlight {
-  display: inline;
+  p{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    text-align: left;
+  }
 }
 .ingredients{
   display: flex;
@@ -516,20 +512,8 @@ header {
     align-items: flex-start;
   li{
     list-style: none;
+    text-align: left;
   }
-}
-
-
-
-button {
-  width: 300px;
-  padding: 1rem;
-  margin: 0 auto;
-  align-self: end;
-  font-weight: 600;
- 
-  font-family: monospace;
-  margin-top: 2rem;
 }
 
 section {
@@ -541,80 +525,28 @@ section {
   justify-content: flex-start;
 
   &.content {
-    min-height: 200px;
-    justify-content: center;
+ 
+    height: 100vh;
+    &.active{
+      height: 50vh;
+    }
+    // justify-content: center;
+    display: block;
+    
   }
 }
 
-.menuDetails {
-  padding: 2rem;
-  background-color: #155f3e;
-  color: #cac5c5;
-  border-radius: 1rem;
-}
 
-.highlight {
+
+.highlight, .highlight2 {
   color: #35eb9a;
 }
-
-.questionmark {
-  font-size: 9rem;
-  font-weight: 600;
-  width: 11rem;
-    height: 11rem;
-  position: relative;
-  display: block;
-  border-radius: 100%;
-  padding:1rem;
-  margin: 0px;
-  line-height: 1em;
-}
-
-  .qmarkcontainer{
-    width: 12rem;
-    height: 12rem;
-    position: relative;
-    display: flex;
-    align-items: center;
-    border-radius: 100%;
-    justify-content: center;
-    margin:2rem;
-
-        background: linear-gradient(218deg, #202020, #35eb9a);
-        background-size: 400% 400%;
-
-        -webkit-animation: AnimationName 7s ease infinite;
-        -moz-animation: AnimationName 7s ease infinite;
-        -o-animation: AnimationName 7s ease infinite;
-        animation: AnimationName 7s ease infinite;
-    }
-
-    @-webkit-keyframes AnimationName {
-        0%{background-position:91% 0%}
-        50%{background-position:10% 100%}
-        100%{background-position:91% 0%}
-    }
-    @-moz-keyframes AnimationName {
-        0%{background-position:91% 0%}
-        50%{background-position:10% 100%}
-        100%{background-position:91% 0%}
-    }
-    @-o-keyframes AnimationName {
-        0%{background-position:91% 0%}
-        50%{background-position:10% 100%}
-        100%{background-position:91% 0%}
-    }
-    @keyframes AnimationName {
-        0%{background-position:91% 0%}
-        50%{background-position:10% 100%}
-        100%{background-position:91% 0%}
-    }
 
 .number {
   border-radius: 100%;
   margin: 0px;
   line-height: 0;
-  margin-left: 2rem;
+  margin-left: 1rem;
   min-height: 2rem;
   min-width: 2rem;
   display: flex;

@@ -90,12 +90,16 @@ export default{
             }
            
         },
-        // deleteEventEmit:function(){  
-        //     //LET OP!
-        //     //emitting custom event 'delete-event-emit' => to parent comp
-        //     // emit is passing ('custom event name' + argument (this.idProp)
-        //     this.$emit('delete-event-emit', this.idProp)
-        // },
+        addEventWai:function(){  
+          const filterCheckBox = document.querySelectorAll(".form-check-input");
+          for (let index = 0; index < filterCheckBox.length; index++) {
+              filterCheckBox[index].addEventListener("keydown", (event) => {
+                if (event.keyCode === 13) {
+                  event.target.click();
+                }
+            });
+          }
+        }
     },
        //YOU only want to change one value when one dependency changes.NOT all..
         //Not change all because of one change in one of the existing data depandancy..
@@ -127,6 +131,7 @@ export default{
     },
     mounted(){
         this.setCheckbox()
+        this.addEventWai()
     },
     created() {
        

@@ -1,59 +1,119 @@
-body{
+body {
+  background-color: $gray-dark-5;
+
+  article {
     background-color: $gray-dark-5;
-        article{
-            background-color: $gray-dark-5;
-        }
-        section{
-            background-color: $gray-dark-5;
-        }
-        h1,h2,h3,h4
-        {
-            color:$gray-light-4;
-        }
-        h1{
-            margin-bottom: 1rem;
-        }
-        h4{
-          text-align: right;
-          color: $gray-dark-5;
-        }
-        a{
-            font-weight: 500;
-            color:$green-lighter;
-            text-decoration: inherit;
-                &.nav-link{
-                    color:$gray-light-4;
-                }
-                &:hover{
-                    color: $gray-light-3;  
-                }
-        } 
-        form{
-            legend{
-                color: $gray-dark-1;
+  }
+  section {
+    background-color: $gray-dark-5;
+    .idNumber{
+        color:$gray-dark-5;
+    }
+  }
+  h1,
+  h2,
+  h3{
+    color: $gray-light-4;
+  }
+  h1 {
+    margin-bottom: 1rem;
+  }
+  h4 {
+    text-align: right;
+    color: $gray-dark-5;
+  }
+  a {
+    font-weight: 500;
+    color: $green-lighter;
+    text-decoration: inherit;
+    &.nav-link {
+      color: $gray-light-4;
+    }
+    &:hover {
+      color: $gray-light-3;
+    }
+  }
+  nav{
+        color: $gray-dark-3;
+    }
+  form {
+    legend {
+      color: $gray-dark-1;
+    }
+    label {
+      color: $gray-dark-1;
+    }
+    span {
+      color: $gray-dark-3;
+
+      &.label {
+        color: $gray-dark-1;
+      }
+    }
+    input {
+      &.form-check-input:checked {
+        background-color: $green;
+        border-color: $green-dark;
+      }
+    }
+  }
+  .number {
+    border-radius: 100%;
+    border: solid 2px $gray-dark-4;
+    background-color: transparent;
+  }
+  .questionmark {
+    background-color: $gray-dark-5;
+    color: $gray-light-5;
+  }
+  .results {
+    background-color: $gray-light-5;
+
+    h1 {
+      color: $green-darker;
+    }
+  }
+}
+
+//WAI contrast colors
+.wai {
+    background-color:$gray-dark-3;
+    section{
+        background-color:$gray-dark-3;  
+            h6{
+                color: $gray-light-2
             }
-            label{
-                color:$gray-dark-1;
+            .idNumber{
+                color: $gray-light-2
             }
-            span{
-                color:$gray-dark-3; 
-            }
+    }
+    button{
+        color:$gray-light-2;
+    }
+  form {
+    .form-check {
+        span{
+            color: $gray-light-2;
+            &.label {
+                color:$gray-light-2;
+              }
         }
-        .number {
-            border-radius: 100%;
-            border: solid 2px $gray-dark-4;
-            background-color: transparent;
-        } 
-        .questionmark {
-            background-color: $gray-dark-5;
-            color: $gray-light-5;
         }
-        .results{
-            background-color: $gray-light-5;
-            
-            h1{
-                color: blue;
-            }  
-        } 
-      
+      label {
+        color: $gray-light-2;
+      }
+      legend{
+        color: $gray-light-2;
+      }
+    }
+    .number {
+        border: solid 2px$gray-light-2;
+    } 
+  
+  nav{
+    color: $gray-light-2;
+    .slider {
+        background-color:$gray-light-1;
+    }
+  }
 }

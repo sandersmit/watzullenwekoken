@@ -17,6 +17,7 @@ import router from './router';
 import MenuItemComp from './components/MenuItemComp.vue'
 import NavigationComp from './components/NavigationComp.vue'
 import FilterCheckboxComp from './components/forms/FilterCheckboxComp.vue'
+import WaiCheckBoxComp from './components/forms/WaiCheckBoxComp.vue'
 
 
 //setting a constant for the imported 'main/global' AppName
