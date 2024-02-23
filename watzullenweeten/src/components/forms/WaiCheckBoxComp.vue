@@ -34,19 +34,19 @@ function toggleCheckEmit(){
 </script>
 
 <template>
+
     <div class="form-check check">
-        <span v-if="checkBool" class="label">{{props.checkboxNameProp}} on</span>
-        <span v-else class="label">{{props.checkboxNameProp}} off</span>
+        
+        <span id="toggleWAI" v-if="checkBool" class="label">{{props.checkboxNameProp}} on</span>
+        <span id="toggleWAI"  v-else class="label">{{props.checkboxNameProp}} off</span>
         <!-- <img alt="iconAltName" :src="path"> -->
         <label :for="`${checkIdProp}`" class="switch mx-2" tabindex="0">    
-             <input  @click="toggleCheckEmit"  :id="`${props.checkIdProp}`" type="checkbox" :aria-describedby="`toggle ${props.checkboxValueProp} ${checkBool}`">
+             <input  @click="toggleCheckEmit"  :id="`${props.checkIdProp}`" type="checkbox" :aria-labelledby="`toggleWAI`">
              <span class="slider"></span>
         </label>
     </div>
 </template>
 
 <style scoped lang="scss">
-
-   
 </style>
 

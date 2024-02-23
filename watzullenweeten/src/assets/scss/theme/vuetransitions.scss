@@ -1,0 +1,60 @@
+.highlightTrans-enter-active,
+.highlightTrans-leave-active {
+  transition: all 1.5s ease;
+}
+
+.highlightTrans-enter-from {
+  transform: translateX(-1000px);
+  opacity: 0;
+}
+
+.highlightTrans-enter-to {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.highlightTrans-leave-to {
+  opacity: 0;
+  transform: translateX(1000px);
+}
+
+.fadeTrans-enter-active,
+.fadeTrans-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fadeTrans-enter-from {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+.fadeTrans-enter-to {
+  transform: translateY(0px);
+  opacity: 1;
+}
+
+.fadeTrans-leave-to {
+  transform: translateY(20px);
+  opacity: 0.01;
+}
+
+//default vue class v-
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  opacity: 1;
+}
+
+.v-enter-from {
+  //transform: translateY(-20%);
+  opacity: 0;
+}
+
+.v-enter-to {
+  //transform: translateY(0%);
+  opacity: 1;
+}
+.v-leave-to {
+  //transform: translateY(-20%);
+  opacity: 0;
+}
