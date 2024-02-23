@@ -2,37 +2,29 @@
 body{
    
         article{
-            background-color: $gray-dark-5;
+           
         }
         section{
-            background-color: $gray-dark-5;
+           
         }
         h1,h2,h3,h4
         {
-            color:$gray-light-4;
+            
         }
         h1{
-            margin-bottom: 1rem;
-        }
-        h4{
-          text-align: right;
-          color: $gray-dark-5;
+            
         }
         a{
             font-weight: 500;
-            color:$green-lighter;
             text-decoration: inherit;
                 &.nav-link{
-                    color:$gray-light-4;
                 }
                 &:hover{
-                    color: $gray-light-3;  
                 }
         } 
         form{
             display: flex;
             flex-direction: column;
-            background-color:$gray-dark-4;
             padding: 1rem;
             border-radius: 8px;
             .row{
@@ -58,20 +50,23 @@ body{
                   }
             }
         }
+        nav{
+            .logo{
+
+            }
+        }
+        
         .number {
-            border-radius: 100%;
-            border: solid 2px $gray-dark-4;
-            background-color: transparent;
+         
         } 
         .questionmark {
-            background-color: $gray-dark-5;
-            color: $gray-light-5;
+           
         }
-        .results{
-            background-color: $gray-light-5;
-            h1{
-                color: blue;
-            }  
-        } 
+        .tag {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0.25rem;
+            margin-left: 0px;
+          }
+       
       
 }

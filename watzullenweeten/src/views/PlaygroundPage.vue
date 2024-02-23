@@ -106,6 +106,3 @@ watch(computeCategorie, () => {
 
 </template>
 
-<style >
-
-</style>

@@ -139,25 +139,6 @@ export default{
 }
 </script>
 
-<style scoped lang="scss">
-body{
-    a{
-        text-decoration: none;
-        margin:1px;
-        padding: 0.5rem 1rem;
-        display: inline-block;
-        color: #d1d1d1;
-        background-color: #282828;
-        &:hover{
-            background-color: #3a3a3a;
-        }
-    }
-    a[data-cur-page]{
-        &.active{
-            color:#42d392;
-        }
-    }
-}
-   
-</style>
+<!-- <style scoped lang="scss">
+</style> -->
 

@@ -1,3 +1,8 @@
+:root {
+  color: $gray-light-5;
+  background-color: $gray-dark-4;
+  color-scheme: light dark;
+}
 body {
   background-color: $gray-dark-5;
 
@@ -33,10 +38,19 @@ body {
       color: $gray-light-3;
     }
   }
+  .nav,
   nav{
         color: $gray-dark-3;
+        .nav-item {
+          &.active {
+            a {
+              color:$green-lighter;
+            }
+          }
+        }
     }
   form {
+    background-color: $gray-dark-4;
     legend {
       color: $gray-dark-1;
     }
@@ -57,8 +71,50 @@ body {
       }
     }
   }
+  input:checked + .slider {
+    background-color: $green;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px $green;
+  }
+  button{
+    color:$gray-light-2;
+    border: 1px solid $green-light;
+    &:hover {
+      border: 1px solid $green-lighter;
+      background-color: $gray-dark-5;
+    }
+    &:disabled {
+      border: 1px solid $gray-dark-3;
+      animation: none;
+      &:hover {
+        border: 1px solid $gray-dark-3;
+        background-color: $gray-dark-6;
+        cursor: default;
+      }
+    }
+  }
+  svg {
+    fill: $green-lighter;
+    transition: all 0.3s ease;
+  }
+
+  #app {
+    .menuDetails {
+      background-color: $green-darker;
+      color: $gray-light-2;
+      border: solid 1px $green-darker;
+      > div {
+        border-bottom: solid 1px $gray-dark-5;
+      }
+    }
+  }
+  .highlight, .highlight2 {
+    color: $green-lighter;
+  }
+  
   .number {
-    border-radius: 100%;
     border: solid 2px $gray-dark-4;
     background-color: transparent;
   }
@@ -74,12 +130,27 @@ body {
     }
   }
 }
+.ingredients {
+  li {
+    background: $gray-dark-4;
+  }
+}
+.tag {
+  background: $gray-dark-4;
+}
+.slider{
+  background-color: $gray-dark-3;
+}
 
 //WAI contrast colors
 .wai {
     background-color:$gray-dark-3;
     section{
-        background-color:$gray-dark-3;  
+      
+        background-color:$gray-dark-3;
+        &.titleContainer{
+          background-color: $green-darker;
+        }  
             h6{
                 color: $gray-light-2
             }
