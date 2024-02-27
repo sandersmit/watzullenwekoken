@@ -1,7 +1,7 @@
 {
   "meals": [
     {
-      "idMeal": "53050",
+      "idMeal": "53051",
       "strMeal": "Ayam Percik",
       "strDrinkAlternate": null,
       "strCategory": "Chicken",
@@ -53,7 +53,8 @@
       "strSource": "http://www.curiousnut.com/roasted-spiced-chicken-ayam-percik/",
       "strImageSource": null,
       "strCreativeCommonsConfirmed": null,
-      "dateModified": null
+      "dateModified": null,
+      "staticCat":"Dessert"
     },
     {
       "idMeal": "52940",
@@ -108,7 +109,8 @@
       "strSource": "http://www.geniuskitchen.com/recipe/authentic-jamaican-brown-stew-chicken-347996",
       "strImageSource": null,
       "strCreativeCommonsConfirmed": null,
-      "dateModified": null
+      "dateModified": null,
+      "staticCat":"Dessert"
     },
     {
       "idMeal": "53016",

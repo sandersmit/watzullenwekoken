@@ -71,11 +71,18 @@ watch(computeCategorie, () => {
        
     }
 })
+
+onMounted(() => {
+  console.log(import.meta.env.VITE_SOME_KEY)
+})
+
 </script>
 
 <template>
-
+ 
     <div class="results"> 
+      <h1>Vite is running in %VITE_SOME_KEY%</h1>
+   
       <button @click="foodStore.fetchFoodCategorie()">fetch categorie</button>
       <button @click="getComputedIds()">get all id's {{ computeFetchedids.length }}</button>
       <button @click="fetchRandomMenuID()">pickMenu</button> pickedMenu is {{randomIdMenuRef}}

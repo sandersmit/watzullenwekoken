@@ -13,29 +13,31 @@ export const useFoodStore = defineStore('FoodStore', {
          //optional data
          reactiveOrderMenus: [
            "Doner",
-           "Pejo",
+           "Snackbar",
            "Pizza",
            "Kibbeling",
-           "spareribsExspress Sate & verse patat frituren",
+           "SpareribsExspress Sate & verse patat frituren",
            "Chinees",
            "Spareribs",
            "Sushi",
-           "Rotti",
-           "Hamburger menu Huesmolen",
+           "Surinaams",
+           "Indisch",
+           "Indiaas",
+           "Shoarma"
             ],
          
          //optional data
          reactiveQuickMenus: [
-         "poelier",
-         "verse maaltijd deka",
-         "verse slager maaltijd",
-         "Soep met brood&smeersels & salade",
-         "Visboer gerecht",
+         "Verse maaltijd Poelier",
+         "Verse maaltijd Supermarkt",
+         "Verse maaltijd Slager",
+         "Soep met brood & smeersels & salade",
+         "Verse maaltijd visboer",
          "Pannenkoeken & poffertjes",
          "Broodje hamburger",
          "Hotdogs",
          "Frituren",
-         "Chickenwings",
+         "Chickenwings airfryer",
          "Taco's"],
          
          //reactiveDataSet
@@ -47,6 +49,7 @@ export const useFoodStore = defineStore('FoodStore', {
          reactiveAllApiMenuDetails:[],
          allMenuDetailsFromApi:[],
          categoriesFood:[],
+         reactviefoodOrigin:[],
          allFoodMenuData:[],
          reactiveFoodCategorieAllId:[],
          reactiveFoodAllIdsState:[],
@@ -66,6 +69,13 @@ export const useFoodStore = defineStore('FoodStore', {
            state.alltitlesFromApi.push(this.reactiveAllApiMenuDetails.meals[key].strMeal)
          }
          return state.alltitlesFromApi;
+      },
+      getAllApiFoodOrigins:function(state){
+        //console.log("getAllApiFoodMenuTitles")
+          for(var key in this.reactiveAllApiMenuDetails.meals) {
+           state.reactviefoodOrigin.push(this.reactiveAllApiMenuDetails.meals[key].strArea)
+         }
+         return state.reactviefoodOrigin;
       },
       getFoodMenuValue:function(state){
         return state.reactiveFoodMenuDetails;
@@ -132,8 +142,7 @@ export const useFoodStore = defineStore('FoodStore', {
       },
       async fetchFoodCategorie(){
         //fetching fetchFoodCategorie
-        //return this.reactiveFoodCategorie = await fetch(`https://www.themealdb.com/api/json/v1/1/categories.php`
-        return this.reactiveFoodCategorie = await fetch(`http://localhost:5173/vue/data/reactiveFoodCategorieNames.json`
+        return this.reactiveFoodCategorie = await fetch(import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint1
           ).then(function (response) {
             return response.json();            
           }).catch(error => {
@@ -142,22 +151,40 @@ export const useFoodStore = defineStore('FoodStore', {
           });
        },
         async fetchCategorieIds(foodcatArg){
-         // return this.reactiveFoodCategorieAllId = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${foodcatArg}`
-         return this.reactiveFoodCategorieAllId = await fetch(`http://localhost:5173/vue/data/reactiveFoodCategorieIds.json`
+         let url;
+         if (import.meta.env.VITE_env_local == 'true') {
+            url = import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint2
+          }else{
+            url = import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint2+foodcatArg
+          }
+  
+         return this.reactiveFoodCategorieAllId = await fetch(url
             ).then(function (response) {
               return response.json();            
             });
         },
         async fetchRandomFoodId(randomArg){
+          let url;
+          if (import.meta.env.VITE_env_local == 'true') {
+              url = import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint3
+
+            }else{
+              url = import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint3+randomArg
+            }
           //fetching fetchRandomFoodId..", with randomArg
-         this.reactiveFoodMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${randomArg}`
+         this.reactiveFoodMenuDetails = await fetch(url
             ).then(function (response) {
               return response.json();            
             });
         },
         async fetchFoodId(idArg){
-          //return this.reactiveAllApiMenuDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idArg}`
-          return this.reactiveAllApiMenuDetails = await fetch(`http://localhost:5173/vue/data/reactiveAllApiMenuDetails.json`
+          let url;
+          if (import.meta.env.VITE_env_local == 'true') {
+            url = import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint3
+          }else{
+            url = import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint3+idArg
+          }
+          return this.reactiveAllApiMenuDetails = await fetch(url
             ).then(function (response) {
               return response.json();            
             });

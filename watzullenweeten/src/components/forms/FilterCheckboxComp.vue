@@ -5,11 +5,15 @@
         :id="`${checkIdProp}`"
         :class="checkIdProp==0 ?'active':''" 
         :value="`${checkboxValueProp}`" 
+        :shownumber="`${showNumberBoolProp}`"
         @click="checkboxValuePropEmit"
         ref="checkboxEl"
         >
-        <span v-if="computeTotalIndicators[checkIdProp]">{{ computeTotalIndicators[checkIdProp].length }}</span> 
-        <span v-else>0</span>                                                            
+       
+        <span v-if="computeTotalIndicators[checkIdProp]&&showNumberBoolProp">{{ computeTotalIndicators[checkIdProp].length }}</span> 
+        <span v-else-if="!showNumberBoolProp"></span>
+        <span v-else-if="!computeTotalIndicators[checkIdProp]">0</span>               
+
     </div>
 </template>
 
@@ -47,6 +51,10 @@ export default{
             },
             checkboxValueProp: {
                 type:String,
+                required: true
+            },
+            showNumberBoolProp: {
+                type:Boolean,
                 required: true
             }
     },

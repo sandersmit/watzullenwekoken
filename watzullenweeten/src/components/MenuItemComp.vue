@@ -119,8 +119,17 @@ const computeTotalMenuTitles = computed(function(){
     //reset array to empty
     titlesResults.value = [];
     foodStore.getFoodMenuFiltered.forEach((element, index) => {
-     titlesResults.value.push(element.menu)
+      //dont push empty values
+      if (element.menu != null){
+       titlesResults.value.push(element.menu)
+      }
     });
+    return titlesResults.value.flat();
+})
+
+
+const computeFilterCategorie = computed(function(){
+    //reset array to empty
     return titlesResults.value.flat();
 })
 
@@ -201,14 +210,32 @@ const showMenuId = computed(function(){
   }
 })
 //reactiveFoodCategorieAllId
-const computeAllCategorieData = computed(function () {
-  let arrayValues = [];
-  for (const [key, value] of Object.entries(reactiveFoodCategorieAllId.value)) {
-    //filter in object for sertain key names
-    console.log("key", key, "value", value)
-    arrayValues.push(value)
-  }
-  return arrayValues.flat()
+const computeAllFilteredCategorieData = computed(function () {
+  allMenuDetailsFromApi.value.filter(
+    function(element, index) 
+      {
+      if(element.strArea === props.menuFilterValProp.param1)
+        {
+          if(props.menuFilterValProp.param2){
+            alltitlesFromApi.value.push(element.strMeal)
+            removeDuplicates()
+          }else{
+            const removeIndex = alltitlesFromApi.value.indexOf(element.strMeal);
+            const nullIndex = alltitlesFromApi.value.indexOf(null);
+            alltitlesFromApi.value.splice(removeIndex, 1);
+            alltitlesFromApi.value.splice(nullIndex, 1);
+            removeDuplicates()
+          }
+        }
+      } 
+    )
+    function removeDuplicates() {
+      alltitlesFromApi.value.filter(function(value, index, array) {
+        array.indexOf(value) === index;
+      });
+    }
+  
+  return alltitlesFromApi.value
 })
 
 
@@ -224,11 +251,11 @@ watch(titlesResults, () => {
 
 })
 
-// watch(computeCheckIfApiTitle, () => {
-// })
-
-watch(computeAllFoodMenuTitles, () => {
+watch(computeAllFilteredCategorieData, () => {
 })
+
+// watch(computeAllFoodMenuTitles, () => {
+// })
 
 watch(computeAllFoodMenuValues, () => {
 })
