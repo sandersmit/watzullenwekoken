@@ -115,12 +115,14 @@ const showInstructions = computed(function(){
 
 onMounted(() => {
  loopcategoriesForIdfunction()
+ 
 })
 
 </script>
 
 <template>
   <div class="results">
+    
     {{ selectedCookType }}
   </div>
   <form class="m-4" action="">

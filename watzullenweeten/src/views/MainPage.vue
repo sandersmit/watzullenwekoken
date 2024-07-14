@@ -9,9 +9,13 @@ import { storeToRefs } from "pinia";
 
 const randomIdMenuRef = ref(0)
 const count = ref(0)
+//Vite Env Variables are type:string - convert it to boolean
+const envLocal = ref(import.meta.env.VITE_env_local=="false"?false:true)
+
 const foodStore = useFoodStore();
-const { reactiveFoodCategorie, reactiveFoodAllIdsState} = storeToRefs(useFoodStore()); 
-const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken','Big data (all)', 'Big data > 100']
+const { reactiveFoodCategorie, reactiveFoodAllIdsState, reactviefoodOrigin} = storeToRefs(useFoodStore()); 
+const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken']
+//const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken','Big data (all)', 'Big data > 100']
 
 const selectedCookType = reactive({
         param1: "selectedCookType",
@@ -36,8 +40,8 @@ const selectedCookType = reactive({
 // }
 
 function emitCheckboxValue(argument) {
-            //console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
-            //,triggerd by the child component to parent component`)
+            // console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
+            // //,triggerd by the child component to parent component`)
               selectedCookType.param1 = argument.thisCheckboxName;
               selectedCookType.param2 = argument.thisSelected;
               selectedCookType.param3 = argument.thisId;
@@ -56,14 +60,16 @@ async function fetchCategorieIds(arg, countArg){
   //console.log("get all id's of each categorie",response.meals, count.value, countArg)
   response.meals.forEach((element, index) => {
   //  console.log("index",index, element)
-  //offline 34.. chicken categorie..
-  // details van eerste 2 gerechten per categorie // dus 27 totaal
-  // anders crashed de server door error too many requests at once.. totaal 302 menu's
-    if (index < 1) {
-    //   console.log("count", count.value ,element.idMeal)
-    fetchAllMenuData(element.idMeal)
-    //  console.log("max 2 gerechten per categorie", 'index:',index, 'element:', element);
-    }
+  // details van eerste 10 gerechten per categorie
+  // anders crashed de server door error 'too many requests at once..' totaal 302 menu's
+  //de eerste 10 van de toaal aantal id's  
+    if ( (envLocal.value == false) && (index < 10)  ) {
+              fetchAllMenuData(element.idMeal)
+             }
+    else if ((envLocal.value == true) && (index < 1 )) {
+              //fetch 1 static json if it is local dev
+              fetchAllMenuData(element.idMeal)
+             }
    });
 }
 
@@ -72,17 +78,23 @@ async function loopcategoriesForIdfunction(){
           const response = await foodStore.fetchFoodCategorie();
            //when its done, do a foreach on the response - also awaiting 
           //got all ",response.categories.length,"categorie id's to loop trough"
-          //console.log(response)
+          
+          //fetch random menu id istead of the first default
           //fetchRandomMenuID()
+
+          //loop trough all categories
           response.categories.forEach(newfunction);
             function newfunction(item, index){
-            //loopcategoriesForIdfunction
-            // count.value++
-           //  console.log("loopcategoriesForIdfunction", count.value)
-             if (index < 1) {
-             // console.log("fetchCategorieIds")
+            //fetch first 3 categorieID's if its NOT local env
+             if ((index < 3) && (envLocal.value == false)) {
               fetchCategorieIds(item.strCategory, index)
-             } 
+             }
+             else if ((index < 1) && (envLocal.value == true)) {
+              //fetch 1 static json if it is local dev
+              fetchCategorieIds(item.strCategory, index)
+             } else {
+              return 
+             }
              
             }
     }
@@ -90,11 +102,18 @@ async function loopcategoriesForIdfunction(){
 //COMPUTED
 const computeCategorie = computed(function(){
     if(reactiveFoodCategorie.value.categories){
-      //console.log(foodStore.getCategorieFoodMenu)
       return foodStore.getCategorieFoodMenu;
     } else{
       return null
     }
+})
+
+const computeMenuOrigin = computed(function()
+{
+  let uniqueOrigins = foodStore.getAllApiFoodOrigins.filter(function(value, index, array) {
+    return array.indexOf(value) === index;
+  });
+    return uniqueOrigins
 })
 
 const computeFetchedids = computed(function(){
@@ -126,19 +145,19 @@ reactiveFoodAllIdsState.value.length = 0
 </script>
 <template>
   <form class="my-1 m-4" action="">
-    <!-- <fieldset>
-      <legend>Selecteer een categorie eten:</legend>
+    <fieldset>
+      <legend>Select food origin:</legend>
           <div class="row">
-            <filter-checkbox-comp v-for="(typeitem, index) in computeCategorie" :key="index" :checkbox-name-prop="typeitem"
-                        :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
+            <filter-checkbox-comp v-for="(typeitem, index) in computeMenuOrigin" :key="index+100" :checkbox-name-prop="typeitem"
+                        :check-id-prop="index+100" :checkbox-value-prop="typeitem" :show-number-bool-prop="false" @emit-checkbox-value="emitCheckboxValue">
             </filter-checkbox-comp>
           </div>
-    </fieldset> -->
+    </fieldset>
     <fieldset>
-      <legend>Selecteer een kook type:</legend>
+      <legend>Select cooking type:</legend>
         <div class="row">
           <filter-checkbox-comp ref="filtercheckboxcompRef" v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
-                      :check-id-prop="index" :checkbox-value-prop="typeitem" @emit-checkbox-value="emitCheckboxValue">
+                      :check-id-prop="index" :checkbox-value-prop="typeitem" :show-number-bool-prop="true" @emit-checkbox-value="emitCheckboxValue">
           </filter-checkbox-comp>
         </div>
     </fieldset>

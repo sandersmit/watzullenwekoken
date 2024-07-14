@@ -42,17 +42,26 @@ body {
   nav{
         color: $gray-dark-3;
         .nav-item {
+          a{
+            &.router-link-active{
+              color:$green-lighter;
+            }
+            
+         }
           &.active {
             a {
               color:$green-lighter;
+             
             }
+            
           }
         }
     }
   form {
     background-color: $gray-dark-4;
     legend {
-      color: $gray-dark-1;
+      color: $green;
+
     }
     label {
       color: $gray-dark-1;
@@ -163,19 +172,17 @@ body {
     }
   form {
     .form-check {
-        span{
-            color: $gray-light-2;
-            &.label {
-                color:$gray-light-2;
-              }
+          span{
+              color: $gray-light-2;
+              &.label {
+                  color:$gray-light-2;
+                }
+          }
         }
+        label{
+          color:$gray-light-2;
         }
-      label {
-        color: $gray-light-2;
-      }
-      legend{
-        color: $gray-light-2;
-      }
+      
     }
     .number {
         border: solid 2px$gray-light-2;

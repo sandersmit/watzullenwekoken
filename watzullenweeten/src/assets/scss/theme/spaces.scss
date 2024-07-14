@@ -31,6 +31,12 @@ body{
                 margin-left: 1rem;
                
             }
+            fieldset{
+                margin-top: 1rem;
+                &:first-child{
+                    margin-top: 0;
+                }
+            }
             legend{
                 @include make-col(12);
                 text-align: left;
