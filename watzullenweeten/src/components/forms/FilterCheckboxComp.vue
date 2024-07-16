@@ -9,10 +9,10 @@
         @click="checkboxValuePropEmit"
         ref="checkboxEl"
         >
-       
-        <span v-if="computeTotalIndicators[checkIdProp]&&showNumberBoolProp">{{ computeTotalIndicators[checkIdProp].length }}</span> 
+        
+        <span v-if="computeTotalIndicators[checkIdProp]&&showNumberBoolProp">{{ computeTotalIndicators[checkIdProp].length==0 ? 0+' (no selection)' : computeTotalIndicators[checkIdProp].length }}</span> 
         <span v-else-if="!showNumberBoolProp"></span>
-        <span v-else-if="!computeTotalIndicators[checkIdProp]">0</span>               
+        <span v-else-if="!computeTotalIndicators[checkIdProp]">?? (no slections)</span>               
 
     </div>
 </template>
@@ -116,17 +116,7 @@ export default{
     computed:{
             computeTotalIndicators() {  
                 return this.foodStore.allTitlesGet
-            },
-            computedClass() {
-                const valueclassname = paginationIndexProp=0 ? 'active':''
-                //let className = 'active';
-                // More complicated logic to determine what
-                // class should be applied
-                return valueclassname;
-                },
-            // returnChecked() {
-            //     return this.selected
-            // }   
+            }
     },
     //YOU repeat the names from //data properies  //for example 'counter'
     // - in the 'watch:' object - as functions() - to watch changes between them. 
