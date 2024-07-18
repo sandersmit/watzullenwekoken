@@ -7,13 +7,15 @@ import FilterCheckboxComp from '../components/forms/FilterCheckboxComp.vue';
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 
 
-const randomIdMenuRef = ref(0)
+//const randomIdMenuRef = ref(0)
 const count = ref(0)
 //Vite Env Variables are type:string - convert it to boolean
 const envLocal = ref(import.meta.env.VITE_env_local=="false"?false:true)
 
+const extraBoxes = ref(false)
+
 const foodStore = useFoodStore();
-const { reactiveFoodCategorie, reactiveFoodAllIdsState, reactviefoodOrigin} = storeToRefs(useFoodStore()); 
+const { reactiveFoodCategorie, reactiveFoodAllIdsState} = storeToRefs(useFoodStore()); 
 const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken']
 //const cookingTypes = ['Niet koken (afhalen)','Snel koken','Uitgebreid koken','Big data (all)', 'Big data > 100']
 
@@ -42,10 +44,16 @@ const selectedCookType = reactive({
 function emitCheckboxValue(argument) {
             // console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
             // //,triggerd by the child component to parent component`)
+           
+
+
               selectedCookType.param1 = argument.thisCheckboxName;
               selectedCookType.param2 = argument.thisSelected;
               selectedCookType.param3 = argument.thisId;
             foodStore.showAllAction(argument.thisId,  argument.thisSelected )
+           
+            selectedCookType.param2==true&&selectedCookType.param3==2 ? extraBoxes.value=true : null
+            selectedCookType.param2==false&&selectedCookType.param3==2 ? extraBoxes.value=false : null
           }
         
 function fetchAllMenuData(idArg){
@@ -53,7 +61,7 @@ function fetchAllMenuData(idArg){
 }
 
 // //await all catergoriesID's - then fetch all menu id's 
-async function fetchCategorieIds(arg, countArg){
+async function fetchCategorieIds(arg){
   //get all id's of each categorie
   const response = await foodStore.fetchCategorieIds(arg)
   count.value++
@@ -145,21 +153,22 @@ reactiveFoodAllIdsState.value.length = 0
 </script>
 <template>
   <form class="my-1 m-4" action="">
+
     <fieldset>
-      <legend>Select food origin:</legend>
-          <div class="row">
-            <filter-checkbox-comp v-for="(typeitem, index) in computeMenuOrigin" :key="index+100" :checkbox-name-prop="typeitem"
-                        :check-id-prop="index+100" :checkbox-value-prop="typeitem" :show-number-bool-prop="false" @emit-checkbox-value="emitCheckboxValue">
-            </filter-checkbox-comp>
-          </div>
-    </fieldset>
-    <fieldset>
-      <legend>Select cooking type:</legend>
+      <legend>Select cooking type: </legend>
         <div class="row">
           <filter-checkbox-comp ref="filtercheckboxcompRef" v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
                       :check-id-prop="index" :checkbox-value-prop="typeitem" :show-number-bool-prop="true" @emit-checkbox-value="emitCheckboxValue">
           </filter-checkbox-comp>
         </div>
+    </fieldset>
+    <fieldset v-if="extraBoxes" >
+      <legend>Select food Cuisine:</legend>
+          <div class="row">
+            <filter-checkbox-comp v-for="(typeitem, index) in computeMenuOrigin" :key="index+100" :checkbox-name-prop="typeitem"
+                        :check-id-prop="index+100" :checkbox-value-prop="typeitem" :show-number-bool-prop="false" @emit-checkbox-value="emitCheckboxValue">
+            </filter-checkbox-comp>
+          </div>
     </fieldset>
   </form>
      <menu-item-comp used-on-page="main" btnmsg="Wat koken we vandaag" ref="menuitemcompRef" :menu-filter-val-prop="selectedCookType" :filters-total="cookingTypes.length">

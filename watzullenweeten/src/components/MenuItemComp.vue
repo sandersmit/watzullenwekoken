@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed,ref, reactive ,defineExpose, watch, onMounted, onUpdated, nextTick} from "vue";
+import { computed,ref ,defineExpose, watch, onMounted} from "vue";
 import gsap from 'gsap'
 
 import { useFoodStore } from '../stores/Foodstore';
@@ -39,10 +39,7 @@ const props =  defineProps({
 
 const foodStore = useFoodStore();
 const {alltitlesFromApi,
-   allMenuDetailsFromApi,
-    reactiveFoodAllIdsState,
-    reactiveFoodCategorieAllId,
-    categoriesFood } = storeToRefs(useFoodStore()); 
+   allMenuDetailsFromApi } = storeToRefs(useFoodStore()); 
 
 //To replace the data(){}
 const CTAbutton = ref();
@@ -118,7 +115,7 @@ defineExpose({
 const computeTotalMenuTitles = computed(function(){
     //reset array to empty
     titlesResults.value = [];
-    foodStore.getFoodMenuFiltered.forEach((element, index) => {
+    foodStore.getFoodMenuFiltered.forEach((element) => {
       //dont push empty values
       if (element.menu != null){
        titlesResults.value.push(element.menu)
@@ -152,10 +149,6 @@ let thisItem = alltitlesFromApi.value.find(item => item == computeSelectedTitle.
 const computeMenuFilter = computed(function(){
   currentSelectedFilters.value[props.menuFilterValProp.param3] = props.menuFilterValProp.param2;
     return currentSelectedFilters.value
-})
-
-const computeAllFoodMenuTitles = computed(function(){
-    return foodStore.getAllApiFoodMenuTitles;
 })
 
 const computeAllFoodMenuValues = computed(function(){
@@ -212,7 +205,7 @@ const showMenuId = computed(function(){
 //reactiveFoodCategorieAllId
 const computeAllFilteredCategorieData = computed(function () {
   allMenuDetailsFromApi.value.filter(
-    function(element, index) 
+    function(element) 
       {
       if(element.strArea === props.menuFilterValProp.param1)
         {
