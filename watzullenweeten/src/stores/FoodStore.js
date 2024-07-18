@@ -38,7 +38,13 @@ export const useFoodStore = defineStore('FoodStore', {
          "Hotdogs",
          "Frituren",
          "Chickenwings airfryer",
-         "Taco's"],
+         "Taco's",
+         "Tomaten groentesoep met gehakt ballen + salade + stokbrood (vezels) en smeersels",
+         "Zalm met Japanse wok groenten rijst + zeewier salade",
+         "Schnitzels uit vriezer + wortels en doperwtjes + gebakken aardappels",
+         "Broccoli gebakken paprika pesto kipfilet rijst",
+         "Andijvie Stampot worst jus uitjes."
+        ],
          
          //reactiveDataSet
          allFilteredTitles:[],
