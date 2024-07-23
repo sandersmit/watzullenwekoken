@@ -177,6 +177,7 @@ export const useFoodStore = defineStore('FoodStore', {
             }else{
               url = import.meta.env.VITE_API_BASE_URL+import.meta.env.VITE_endpoint3+randomArg
             }
+          
           //fetching fetchRandomFoodId..", with randomArg
          this.reactiveFoodMenuDetails = await fetch(url
             ).then(function (response) {

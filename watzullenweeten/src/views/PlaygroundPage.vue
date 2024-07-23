@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive ,computed ,defineProps ,ref,watch, onMounted } from "vue";
+import { reactive ,computed ,ref,watch, onMounted } from "vue";
 
 import { useFoodStore } from '../stores/FoodStore';
 import { storeToRefs } from "pinia"; 

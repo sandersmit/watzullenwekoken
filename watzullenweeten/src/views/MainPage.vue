@@ -44,12 +44,9 @@ const selectedCookType = reactive({
 function emitCheckboxValue(argument) {
             // console.log(`emited argument is : ${argument.thisSelected},${argument.thisCheckboxName} from ,custom event: emitCheckboxValue
             // //,triggerd by the child component to parent component`)
-           
-
-
-              selectedCookType.param1 = argument.thisCheckboxName;
-              selectedCookType.param2 = argument.thisSelected;
-              selectedCookType.param3 = argument.thisId;
+            selectedCookType.param1 = argument.thisCheckboxName;
+            selectedCookType.param2 = argument.thisSelected;
+            selectedCookType.param3 = argument.thisId;
             foodStore.showAllAction(argument.thisId,  argument.thisSelected )
            
             selectedCookType.param2==true&&selectedCookType.param3==2 ? extraBoxes.value=true : null
@@ -67,11 +64,10 @@ async function fetchCategorieIds(arg){
   count.value++
   //console.log("get all id's of each categorie",response.meals, count.value, countArg)
   response.meals.forEach((element, index) => {
-  //  console.log("index",index, element)
   // details van eerste 10 gerechten per categorie
   // anders crashed de server door error 'too many requests at once..' totaal 302 menu's
   //de eerste 10 van de toaal aantal id's  
-    if ( (envLocal.value == false) && (index < 10)  ) {
+    if ( (index < 10) &&  (envLocal.value == false)   ) {
               fetchAllMenuData(element.idMeal)
              }
     else if ((envLocal.value == true) && (index < 1 )) {
@@ -142,9 +138,15 @@ watch(computeFetchedids, () => {
 watch(computeAlltitlesFromApi, () => {
 })
 
+watch(computeMenuOrigin, () => {
+})
+
 
 
 onMounted(() => {
+  console.log("VITE_env_message:",import.meta.env.VITE_env_message)
+  console.log("VITE_env_local:",import.meta.env.VITE_env_local, envLocal.value)
+  console.log("VITE_main_menu_visible:",import.meta.env.VITE_main_menu_visible)
 //resetting the id's when page refresh
 reactiveFoodAllIdsState.value.length = 0
  loopcategoriesForIdfunction()
@@ -153,9 +155,9 @@ reactiveFoodAllIdsState.value.length = 0
 </script>
 <template>
   <form class="my-1 m-4" action="">
-
     <fieldset>
-      <legend>Select cooking type: </legend>
+      <legend>Select cooking type: 
+      </legend>
         <div class="row">
           <filter-checkbox-comp ref="filtercheckboxcompRef" v-for="(typeitem, index) in cookingTypes" :key="index" :checkbox-name-prop="typeitem"
                       :check-id-prop="index" :checkbox-value-prop="typeitem" :show-number-bool-prop="true" @emit-checkbox-value="emitCheckboxValue">
@@ -163,7 +165,9 @@ reactiveFoodAllIdsState.value.length = 0
         </div>
     </fieldset>
     <fieldset v-if="extraBoxes" >
-      <legend>Select food Cuisine:</legend>
+      <legend>
+        <hr>
+        Select food Cuisine:</legend>
           <div class="row">
             <filter-checkbox-comp v-for="(typeitem, index) in computeMenuOrigin" :key="index+100" :checkbox-name-prop="typeitem"
                         :check-id-prop="index+100" :checkbox-value-prop="typeitem" :show-number-bool-prop="false" @emit-checkbox-value="emitCheckboxValue">

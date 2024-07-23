@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed,ref ,defineExpose, watch, onMounted} from "vue";
+import { computed,ref, watch, onMounted} from "vue";
 import gsap from 'gsap'
 
 import { useFoodStore } from '../stores/Foodstore';
